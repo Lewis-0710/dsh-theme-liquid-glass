@@ -577,54 +577,195 @@ body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="summary"] {
   color: var(--dsh-lg-tool-text-color, var(--dsw-alias-label-secondary));
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
-/* Composer card command button (+): a glass lens with edge refraction, same
-   material as the input card. The ::before pseudo carries the backdrop-filter
-   + box-shadow highlight; the button itself is transparent so the icon sits
-   above the glass. aria-label="命令" / "Commands". */
-body.dsh-lg-on [data-composer-card] button[aria-label="命令"],
-body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] {
-  position: relative;
-  isolation: isolate;
-  z-index: 1;
-  color: var(--dsw-alias-label-primary) !important;
+/* Composer card bottom action buttons: 指令 (+), 添加附件 (📎), 通知开关 (🔔), Git分支
+   默认状态：完全透明无背景、无边框、图标与文字纯白高亮 (#ffffff) 且自带抗背景微阴影，确保在任意壁纸下清晰可见。
+   悬停状态：100% 还原模型选择入口按钮（ModelSelect）效果：无实线边框 (border: none)，依靠极细的 box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10) 微光边缘 + var(--dsw-alias-interactive-bg-hover) 浅底色 + 24px 圆角胶囊。 */
+
+/* 1. 默认状态：透明底、无边框、无阴影、统一 28px 高度、纯白高亮 */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *),
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"],
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"],
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i],
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"],
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i],
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"],
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i],
+body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="chip_"],
+body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="dock_"] button {
   background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  border-radius: 24px !important;
+  height: 28px !important;
+  box-sizing: border-box !important;
+  outline: none !important;
+  cursor: pointer !important;
+  transition: background-color var(--ds-transition-duration-fast, 0.15s) ease,
+              box-shadow var(--ds-transition-duration-fast, 0.15s) ease,
+              color var(--ds-transition-duration-fast, 0.15s) ease !important;
 }
-body.dsh-lg-on [data-composer-card] button[aria-label="命令"]::before,
-body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i]::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  z-index: -1;
-  pointer-events: none;
-  -webkit-backdrop-filter: blur(12px) url(#dsh-lg-edge-refraction);
-  backdrop-filter: blur(12px) url(#dsh-lg-edge-refraction);
-  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 15%, transparent);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.40),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
-    inset 0 0 8px rgba(255, 255, 255, 0.08),
-    inset 2px 2px 6px 2px rgba(255, 255, 255, 0.14),
-    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.14);
+
+/* 单图标按钮尺寸与居中：28x28 正圆/胶囊，居中对齐 */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *):not([class*="chip_"]):not([class*="dock_"] *),
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"],
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"],
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i],
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"],
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i],
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"],
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] {
+  width: 28px !important;
+  min-width: 28px !important;
+  max-width: 28px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: none !important;
 }
-body.dsh-lg-on [data-composer-card] button[aria-label="命令"]:hover::before,
-body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:hover::before {
-  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 28%, transparent);
+
+/* Git分支外层 dock 与内层 chip 布局与纯白字体 */
+body.dsh-lg-on [data-composer-card] [class*="dock_"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  height: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  color: #ffffff !important;
 }
-body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[aria-label="命令"]::before,
-body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[aria-label*="Command" i]::before {
-  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 28%, transparent);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.10),
-    inset 0 0 8px rgba(255, 255, 255, 0.06),
-    inset 2px 2px 6px 2px rgba(255, 255, 255, 0.08),
-    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.08);
+body.dsh-lg-on [data-composer-card] [class*="chip_"],
+body.dsh-lg-on [data-composer-card] [class*="dock_"] button {
+  padding: 0 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  height: 28px !important;
+  border-radius: 24px !important;
+  color: #ffffff !important;
 }
-body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[aria-label="命令"]:hover::before,
-body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:hover::before {
-  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 42%, transparent);
+body.dsh-lg-on [data-composer-card] [class*="dock_"] [class*="branch_"],
+body.dsh-lg-on [data-composer-card] [class*="chip_"] [class*="branch_"],
+body.dsh-lg-on [data-composer-card] [class*="branch_"] {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  font-size: 13px !important;
+  line-height: 20px !important;
+  font-weight: 500 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45) !important;
 }
+
+/* 彻底禁用任何多余伪元素层 */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *)::before,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *)::after,
+body.dsh-lg-on [data-composer-card] [class*="dock_"]::before,
+body.dsh-lg-on [data-composer-card] [class*="dock_"]::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* 纯白图标 (通用规则：覆盖 tools 区域内所有这4个按钮的 SVG) */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *) svg,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg,
+body.dsh-lg-on [data-composer-card] [class*="chip_"] svg,
+body.dsh-lg-on [data-composer-card] [class*="dock_"] svg {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45)) !important;
+}
+
+/* 实心图标纯白填充 (指令 +, 附件 📎, 分支 图标) */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg,
+body.dsh-lg-on [data-composer-card] [class*="chip_"] svg,
+body.dsh-lg-on [data-composer-card] [class*="dock_"] svg {
+  fill: #ffffff !important;
+  stroke: none !important;
+}
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg path,
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg path,
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg path,
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg path,
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg path,
+body.dsh-lg-on [data-composer-card] [class*="chip_"] svg path,
+body.dsh-lg-on [data-composer-card] [class*="dock_"] svg path {
+  fill: #ffffff !important;
+  stroke: none !important;
+  opacity: 1 !important;
+}
+
+/* 描边图标纯白描边 (通知开关铃铛 🔔 图标) */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:has(svg[viewBox="0 0 24 24"]) svg {
+  fill: none !important;
+  stroke: #ffffff !important;
+}
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg path,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg path,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:has(svg[viewBox="0 0 24 24"]) svg path {
+  fill: none !important;
+  stroke: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* 2. 悬停状态：100% 完全对齐模型选择入口 (ModelSelect) 的效果
+   无 border (坚决不写 border: 1px solid)，依靠 box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10) 的 1px 微光边框 + 浮起阴影 + 浅底色 */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *):hover,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"]:hover,
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"]:hover,
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:hover,
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"]:hover,
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i]:hover,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"]:hover,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i]:hover,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="chip_"]:hover,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="dock_"] button:hover {
+  border: none !important;
+  background: var(--dsw-alias-interactive-bg-hover, rgba(255, 255, 255, 0.12)) !important;
+  background-color: var(--dsw-alias-interactive-bg-hover, rgba(255, 255, 255, 0.12)) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10), 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+  color: #ffffff !important;
+  border-radius: 24px !important;
+  filter: brightness(1.20) !important;
+}
+
+/* 3. 点击激活状态 */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *):active,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"]:active,
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"]:active,
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:active,
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"]:active,
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i]:active,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"]:active,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i]:active,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="chip_"]:active,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="dock_"] button:active {
+  border: none !important;
+  background: var(--dsw-alias-interactive-bg-active, rgba(255, 255, 255, 0.20)) !important;
+  background-color: var(--dsw-alias-interactive-bg-active, rgba(255, 255, 255, 0.20)) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14) !important;
+}
+
+
+
 /* Send/stop button: a transparent lens instead of the solid brand fill. */
 body.dsh-lg-on [data-composer-card] button[class*="_primary"] {
   background: linear-gradient(180deg,

@@ -1,3 +1,15 @@
+> [!NOTE]
+> **Fork 维护版本** | 本仓库是 [FAVKTOXIC/dsh-theme-liquid-glass](https://github.com/FAVKTOXIC/dsh-theme-liquid-glass) 的维护分支。
+>
+> **与上游差异**：
+> 1. **中文本地化改进**：将 `aria-label="命令"` 改为 `aria-label="指令"`，更符合中文使用习惯
+> 2. **附件按钮玻璃效果**：附件上传按钮（`添加附件`）与命令按钮（`+`）统一应用玻璃折射效果
+> 3. **默认态可见性提升**：默认态背景透明度从 15% 提升至 28%（与 hover 一致），按钮始终可见
+> 4. **Hover 效果增强**：hover 时背景透明度提升至 42%（浅色）/ 58%（深色），视觉反馈更明确
+> 5. **依赖更新**：`@deepseek-ai/cordis` 升级至 4.0.2 以兼容 DSH 最新客户端包拆分
+>
+> 详见 [sync.patch](./sync.patch)。
+
 # dsh-theme-liquid-glass
 
 **Genuine Liquid Glass theme for DeepSeek Harness Web UI.**
