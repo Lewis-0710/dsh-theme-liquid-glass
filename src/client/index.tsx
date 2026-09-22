@@ -218,6 +218,10 @@ function buildTokens(s: LiquidGlassSettings): ThemeTokenOverrides {
     light: hexToRgba(tint, clamp01(alpha)),
     dark: hexToRgba(darkGlass(tint), clamp01(alpha)),
   });
+  const hoverGlass = (alpha: number) => ({
+    light: hexToRgba(tint, clamp01(alpha)),
+    dark: `rgba(255, 255, 255, ${clamp01(alpha * 0.75)})`,
+  });
   const edges = (strength: number, darkStrength = strength) => ({
     light: `rgba(0, 0, 0, ${clamp01(g.refraction * strength)})`,
     dark: `rgba(255, 255, 255, ${clamp01(g.refraction * darkStrength)})`,
@@ -254,13 +258,13 @@ function buildTokens(s: LiquidGlassSettings): ThemeTokenOverrides {
   set('--dsw-alias-markdown-citation', glass(a * 0.32));
   set('--dsw-alias-button-elevated-fill', glass(a * 0.55));
   set('--dsw-alias-button-floating-fill', glass(a * 0.55));
-  set('--dsw-alias-button-floating-hover', glass(a * 0.66));
+  set('--dsw-alias-button-floating-hover', hoverGlass(a * 0.66));
   set('--dsw-alias-button-tool-bar-fill', glass(a * 0.62));
-  set('--dsw-alias-button-tool-bar-hover', glass(a * 0.72));
+  set('--dsw-alias-button-tool-bar-hover', hoverGlass(a * 0.72));
   set('--dsw-alias-button-tool-bar-fill-invisible', glass(a * 0.4));
-  set('--dsw-alias-interactive-bg-hover', glass(0.16));
-  set('--dsw-alias-interactive-bg-active', glass(0.2));
-  set('--dsw-alias-interactive-bg-hover-accent', glass(0.24));
+  set('--dsw-alias-interactive-bg-hover', hoverGlass(0.18));
+  set('--dsw-alias-interactive-bg-active', hoverGlass(0.24));
+  set('--dsw-alias-interactive-bg-hover-accent', hoverGlass(0.28));
   set('--dsw-alias-bg-skeleton', edges(0.1));
   // Soft glass rim: low-alpha edges so the composer/dock boundary reads as a
   // subtle luminous rim (the frost strip's feathered top supplies the glow),
@@ -545,27 +549,101 @@ body[data-ds-dark-theme].dsh-lg-on header:has([role="tablist"]) [role="tab"][ari
 body.dsh-lg-on header:has([role="tablist"]) [role="tab"]::after {
   display: none;
 }
+/* General focus & focus-visible reset: eliminate macOS / Chromium default
+   high-contrast focus ring (double black halo / outline) across all glass UI. */
+body.dsh-lg-on button:focus,
+body.dsh-lg-on button:focus-visible,
+body.dsh-lg-on a:focus,
+body.dsh-lg-on a:focus-visible,
+body.dsh-lg-on [role="button"]:focus,
+body.dsh-lg-on [role="button"]:focus-visible,
+body.dsh-lg-on [role="tab"]:focus,
+body.dsh-lg-on [role="tab"]:focus-visible,
+body.dsh-lg-on [role="menuitem"]:focus,
+body.dsh-lg-on [role="menuitem"]:focus-visible {
+  outline: none !important;
+}
 /* General hover effect for interactive elements: highlight edge, floating
-   shadow, subtle lift, and brightness increase. */
-body.dsh-lg-on button:not(:disabled):hover,
-body.dsh-lg-on a:not(:disabled):hover,
-body.dsh-lg-on [role="button"]:not(:disabled):hover,
-body.dsh-lg-on [role="tab"]:not(:disabled):hover,
-body.dsh-lg-on [role="menuitem"]:not(:disabled):hover,
-body.dsh-lg-on [role="link"]:not(:disabled):hover {
+   shadow, subtle lift, and brightness increase. Excludes dialogs and sidebar. */
+body.dsh-lg-on button:not(:disabled):hover:not([role="dialog"] *):not([class*="_tree"] *):not([class*="_sidebar"] *):not([class*="_foot"] *):not([class*="_settingsArea"] *),
+body.dsh-lg-on a:not(:disabled):hover:not([role="dialog"] *):not([class*="_tree"] *):not([class*="_sidebar"] *):not([class*="_foot"] *):not([class*="_settingsArea"] *),
+body.dsh-lg-on [role="button"]:not(:disabled):hover:not([role="dialog"] *):not([class*="_tree"] *):not([class*="_sidebar"] *):not([class*="_foot"] *):not([class*="_settingsArea"] *),
+body.dsh-lg-on [role="tab"]:not(:disabled):hover:not([role="dialog"] *),
+body.dsh-lg-on [role="menuitem"]:not(:disabled):hover:not([role="dialog"] *),
+body.dsh-lg-on [role="link"]:not(:disabled):hover:not([role="dialog"] *) {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 4px 12px rgba(0, 0, 0, 0.10);
   transform: translateY(-1px);
   filter: brightness(1.15);
 }
-body[data-ds-dark-theme].dsh-lg-on button:not(:disabled):hover,
-body[data-ds-dark-theme].dsh-lg-on a:not(:disabled):hover,
-body[data-ds-dark-theme].dsh-lg-on [role="button"]:not(:disabled):hover,
-body[data-ds-dark-theme].dsh-lg-on [role="tab"]:not(:disabled):hover,
-body[data-ds-dark-theme].dsh-lg-on [role="menuitem"]:not(:disabled):hover,
-body[data-ds-dark-theme].dsh-lg-on [role="link"]:not(:disabled):hover {
+body[data-ds-dark-theme].dsh-lg-on button:not(:disabled):hover:not([role="dialog"] *):not([class*="_tree"] *):not([class*="_sidebar"] *):not([class*="_foot"] *):not([class*="_settingsArea"] *),
+body[data-ds-dark-theme].dsh-lg-on a:not(:disabled):hover:not([role="dialog"] *):not([class*="_tree"] *):not([class*="_sidebar"] *):not([class*="_foot"] *):not([class*="_settingsArea"] *),
+body[data-ds-dark-theme].dsh-lg-on [role="button"]:not(:disabled):hover:not([role="dialog"] *):not([class*="_tree"] *):not([class*="_sidebar"] *):not([class*="_foot"] *):not([class*="_settingsArea"] *),
+body[data-ds-dark-theme].dsh-lg-on [role="tab"]:not(:disabled):hover:not([role="dialog"] *),
+body[data-ds-dark-theme].dsh-lg-on [role="menuitem"]:not(:disabled):hover:not([role="dialog"] *),
+body[data-ds-dark-theme].dsh-lg-on [role="link"]:not(:disabled):hover:not([role="dialog"] *) {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10), 0 4px 12px rgba(0, 0, 0, 0.18);
   filter: brightness(1.20);
 }
+/* Switch toggle buttons & thumbs: ensure crisp high contrast between thumb and track in both ON and OFF states */
+body.dsh-lg-on button[role="switch"],
+body.dsh-lg-on [class*="_switch"][role="switch"],
+body.dsh-lg-on [class*="switchRoot"] {
+  box-sizing: border-box !important;
+  position: relative !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease !important;
+}
+
+/* OFF (Unchecked) track: dark translucent base with crisp luminous ring */
+body.dsh-lg-on button[role="switch"]:not([data-state="checked"]):not([aria-checked="true"]),
+body.dsh-lg-on [class*="_switch"][role="switch"]:not([data-state="checked"]):not([aria-checked="true"]),
+body.dsh-lg-on [class*="switchRoot"]:not([data-state="checked"]):not([aria-checked="true"]) {
+  background: rgba(0, 0, 0, 0.35) !important;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.28) !important;
+}
+body.dsh-lg-on button[role="switch"]:not([data-state="checked"]):not([aria-checked="true"]):hover:not(:disabled),
+body.dsh-lg-on [class*="_switch"][role="switch"]:not([data-state="checked"]):not([aria-checked="true"]):hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.45) !important;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.45) !important;
+}
+
+/* OFF (Unchecked) thumb: luminous distinct whitish thumb (never dark or invisible) */
+body.dsh-lg-on button[role="switch"]:not([data-state="checked"]):not([aria-checked="true"]) [class*="thumb" i],
+body.dsh-lg-on button[role="switch"]:not([data-state="checked"]):not([aria-checked="true"]) > span,
+body.dsh-lg-on [class*="_switch"]:not([data-state="checked"]):not([aria-checked="true"]) [class*="thumb" i] {
+  background: rgba(255, 255, 255, 0.65) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.50), 0 0 0 1px rgba(255, 255, 255, 0.35) !important;
+  opacity: 1 !important;
+}
+body.dsh-lg-on button[role="switch"]:not([data-state="checked"]):not([aria-checked="true"]):hover:not(:disabled) [class*="thumb" i],
+body.dsh-lg-on button[role="switch"]:not([data-state="checked"]):not([aria-checked="true"]):hover:not(:disabled) > span,
+body.dsh-lg-on [class*="_switch"]:not([data-state="checked"]):not([aria-checked="true"]):hover:not(:disabled) [class*="thumb" i] {
+  background: rgba(255, 255, 255, 0.90) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(255, 255, 255, 0.50) !important;
+}
+
+/* ON (Checked) track: high-contrast dark track with crisp border */
+body.dsh-lg-on button[role="switch"]:is([data-state="checked"], [aria-checked="true"]),
+body.dsh-lg-on [class*="_switch"][role="switch"]:is([data-state="checked"], [aria-checked="true"]),
+body.dsh-lg-on [class*="switchRoot"]:is([data-state="checked"], [aria-checked="true"]) {
+  background: #000000 !important;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.40) !important;
+}
+body.dsh-lg-on button[role="switch"]:is([data-state="checked"], [aria-checked="true"]):hover:not(:disabled),
+body.dsh-lg-on [class*="_switch"][role="switch"]:is([data-state="checked"], [aria-checked="true"]):hover:not(:disabled) {
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.60) !important;
+  filter: brightness(1.15);
+}
+
+/* ON (Checked) thumb: solid pure white thumb */
+body.dsh-lg-on button[role="switch"]:is([data-state="checked"], [aria-checked="true"]) [class*="thumb" i],
+body.dsh-lg-on button[role="switch"]:is([data-state="checked"], [aria-checked="true"]) > span,
+body.dsh-lg-on [class*="_switch"]:is([data-state="checked"], [aria-checked="true"]) [class*="thumb" i] {
+  background: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(255, 255, 255, 0.40) !important;
+  opacity: 1 !important;
+}
+
 /* Tool call titles (Read, Think, Edit, Bash, etc.): text-shadow for
    readability on glass backgrounds, plus optional custom color. */
 body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="title"] {
@@ -577,54 +655,195 @@ body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="summary"] {
   color: var(--dsh-lg-tool-text-color, var(--dsw-alias-label-secondary));
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
-/* Composer card command button (+): a glass lens with edge refraction, same
-   material as the input card. The ::before pseudo carries the backdrop-filter
-   + box-shadow highlight; the button itself is transparent so the icon sits
-   above the glass. aria-label="命令" / "Commands". */
-body.dsh-lg-on [data-composer-card] button[aria-label="命令"],
-body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] {
-  position: relative;
-  isolation: isolate;
-  z-index: 1;
-  color: var(--dsw-alias-label-primary) !important;
+/* Composer card bottom action buttons: 指令 (+), 添加附件 (📎), 通知开关 (🔔), Git分支
+   默认状态：完全透明无背景、无边框、图标与文字纯白高亮 (#ffffff) 且自带抗背景微阴影，确保在任意壁纸下清晰可见。
+   悬停状态：100% 还原模型选择入口按钮（ModelSelect）效果：无实线边框 (border: none)，依靠极细的 box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10) 微光边缘 + var(--dsw-alias-interactive-bg-hover) 浅底色 + 24px 圆角胶囊。 */
+
+/* 1. 默认状态：透明底、无边框、无阴影、统一 28px 高度、纯白高亮 */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *),
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"],
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"],
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i],
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"],
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i],
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"],
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i],
+body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="chip_"],
+body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="dock_"] button {
   background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  border-radius: 24px !important;
+  height: 28px !important;
+  box-sizing: border-box !important;
+  outline: none !important;
+  cursor: pointer !important;
+  transition: background-color var(--ds-transition-duration-fast, 0.15s) ease,
+              box-shadow var(--ds-transition-duration-fast, 0.15s) ease,
+              color var(--ds-transition-duration-fast, 0.15s) ease !important;
 }
-body.dsh-lg-on [data-composer-card] button[aria-label="命令"]::before,
-body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i]::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  z-index: -1;
-  pointer-events: none;
-  -webkit-backdrop-filter: blur(12px) url(#dsh-lg-edge-refraction);
-  backdrop-filter: blur(12px) url(#dsh-lg-edge-refraction);
-  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 15%, transparent);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.40),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
-    inset 0 0 8px rgba(255, 255, 255, 0.08),
-    inset 2px 2px 6px 2px rgba(255, 255, 255, 0.14),
-    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.14);
+
+/* 单图标按钮尺寸与居中：28x28 正圆/胶囊，居中对齐 */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *):not([class*="chip_"]):not([class*="dock_"] *),
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"],
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"],
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i],
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"],
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i],
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"],
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] {
+  width: 28px !important;
+  min-width: 28px !important;
+  max-width: 28px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: none !important;
 }
-body.dsh-lg-on [data-composer-card] button[aria-label="命令"]:hover::before,
-body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:hover::before {
-  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 28%, transparent);
+
+/* Git分支外层 dock 与内层 chip 布局与纯白字体 */
+body.dsh-lg-on [data-composer-card] [class*="dock_"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  height: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  color: #ffffff !important;
 }
-body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[aria-label="命令"]::before,
-body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[aria-label*="Command" i]::before {
-  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 28%, transparent);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.10),
-    inset 0 0 8px rgba(255, 255, 255, 0.06),
-    inset 2px 2px 6px 2px rgba(255, 255, 255, 0.08),
-    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.08);
+body.dsh-lg-on [data-composer-card] [class*="chip_"],
+body.dsh-lg-on [data-composer-card] [class*="dock_"] button {
+  padding: 0 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  height: 28px !important;
+  border-radius: 24px !important;
+  color: #ffffff !important;
 }
-body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[aria-label="命令"]:hover::before,
-body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:hover::before {
-  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 42%, transparent);
+body.dsh-lg-on [data-composer-card] [class*="dock_"] [class*="branch_"],
+body.dsh-lg-on [data-composer-card] [class*="chip_"] [class*="branch_"],
+body.dsh-lg-on [data-composer-card] [class*="branch_"] {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  font-size: 13px !important;
+  line-height: 20px !important;
+  font-weight: 500 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45) !important;
 }
+
+/* 彻底禁用任何多余伪元素层 */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *)::before,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *)::after,
+body.dsh-lg-on [data-composer-card] [class*="dock_"]::before,
+body.dsh-lg-on [data-composer-card] [class*="dock_"]::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* 纯白图标 (通用规则：覆盖 tools 区域内所有这4个按钮的 SVG) */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *) svg,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg,
+body.dsh-lg-on [data-composer-card] [class*="chip_"] svg,
+body.dsh-lg-on [data-composer-card] [class*="dock_"] svg {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45)) !important;
+}
+
+/* 实心图标纯白填充 (指令 +, 附件 📎, 分支 图标) */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg,
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg,
+body.dsh-lg-on [data-composer-card] [class*="chip_"] svg,
+body.dsh-lg-on [data-composer-card] [class*="dock_"] svg {
+  fill: #ffffff !important;
+  stroke: none !important;
+}
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg path,
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg path,
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg path,
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg path,
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg path,
+body.dsh-lg-on [data-composer-card] [class*="chip_"] svg path,
+body.dsh-lg-on [data-composer-card] [class*="dock_"] svg path {
+  fill: #ffffff !important;
+  stroke: none !important;
+  opacity: 1 !important;
+}
+
+/* 描边图标纯白描边 (通知开关铃铛 🔔 图标) */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:has(svg[viewBox="0 0 24 24"]) svg {
+  fill: none !important;
+  stroke: #ffffff !important;
+}
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg path,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg path,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:has(svg[viewBox="0 0 24 24"]) svg path {
+  fill: none !important;
+  stroke: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* 2. 悬停状态：100% 完全对齐模型选择入口 (ModelSelect) 的效果
+   无 border (坚决不写 border: 1px solid)，依靠 box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10) 的 1px 微光边框 + 浮起阴影 + 浅底色 */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *):hover,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"]:hover,
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"]:hover,
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:hover,
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"]:hover,
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i]:hover,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"]:hover,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i]:hover,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="chip_"]:hover,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="dock_"] button:hover {
+  border: none !important;
+  background: var(--dsw-alias-interactive-bg-hover, rgba(255, 255, 255, 0.12)) !important;
+  background-color: var(--dsw-alias-interactive-bg-hover, rgba(255, 255, 255, 0.12)) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10), 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+  color: #ffffff !important;
+  border-radius: 24px !important;
+  filter: brightness(1.20) !important;
+}
+
+/* 3. 点击激活状态 */
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *):active,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"]:active,
+body.dsh-lg-on [data-composer-card] button[aria-label="指令"]:active,
+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:active,
+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"]:active,
+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i]:active,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"]:active,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i]:active,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="chip_"]:active,
+body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="dock_"] button:active {
+  border: none !important;
+  background: var(--dsw-alias-interactive-bg-active, rgba(255, 255, 255, 0.20)) !important;
+  background-color: var(--dsw-alias-interactive-bg-active, rgba(255, 255, 255, 0.20)) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14) !important;
+}
+
+
+
 /* Send/stop button: a transparent lens instead of the solid brand fill. */
 body.dsh-lg-on [data-composer-card] button[class*="_primary"] {
   background: linear-gradient(180deg,
@@ -670,15 +889,16 @@ body.dsh-lg-on [data-queue-dock] > div {
     inset 0 0 0 1px rgba(255, 255, 255, 0.08),
     inset 0 0 12px rgba(255, 255, 255, 0.06);
 }
-/* Sidebar action buttons (new session, collapse, etc.): the same frosted glass
+/* Sidebar header action buttons (new session, collapse, etc.): the same frosted glass
    + edge refraction as the view tabs, applied via ::before so the button's
-   icon stays above the glass layer. The sidebar shell has a translucent
-   background already, so these buttons blend into the sidebar surface. */
-body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button:not([aria-label*="访问模式" i]):not([aria-label*="Access mode" i]) {
+   icon stays above the glass layer. */
+body.dsh-lg-on [class*="_treeHeader"] button:not([role="dialog"] *):not([aria-label*="访问模式" i]):not([aria-label*="Access mode" i]),
+body.dsh-lg-on [class*="_sidebarHeader"] button:not([role="dialog"] *):not([aria-label*="访问模式" i]):not([aria-label*="Access mode" i]) {
   position: relative;
   isolation: isolate;
 }
-body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button:not([aria-label*="访问模式" i]):not([aria-label*="Access mode" i])::before {
+body.dsh-lg-on [class*="_treeHeader"] button:not([role="dialog"] *):not([aria-label*="访问模式" i]):not([aria-label*="Access mode" i])::before,
+body.dsh-lg-on [class*="_sidebarHeader"] button:not([role="dialog"] *):not([aria-label*="访问模式" i]):not([aria-label*="Access mode" i])::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -695,7 +915,8 @@ body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button:not([aria-label
     inset 2px 2px 6px 2px rgba(255, 255, 255, 0.10),
     inset -2px -2px 4px -1px rgba(255, 255, 255, 0.10);
 }
-body[data-ds-dark-theme].dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button:not([aria-label*="访问模式" i]):not([aria-label*="Access mode" i])::before {
+body[data-ds-dark-theme].dsh-lg-on [class*="_treeHeader"] button:not([role="dialog"] *):not([aria-label*="访问模式" i]):not([aria-label*="Access mode" i])::before,
+body[data-ds-dark-theme].dsh-lg-on [class*="_sidebarHeader"] button:not([role="dialog"] *):not([aria-label*="访问模式" i]):not([aria-label*="Access mode" i])::before {
   background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 12%, transparent);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
@@ -704,18 +925,483 @@ body[data-ds-dark-theme].dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) bu
     inset 2px 2px 6px 2px rgba(255, 255, 255, 0.06),
     inset -2px -2px 4px -1px rgba(255, 255, 255, 0.06);
 }
+/* Tree inline action buttons (workspaces, sessions, tasks +, ..., expand icons):
+   Keep clean and borderless without glass pseudo-elements. Strictly scoped to tree body. */
+body.dsh-lg-on [class*="_treeBody"] button,
+body.dsh-lg-on [class*="_treeItem"] button,
+body.dsh-lg-on [class*="_treeNode"] button,
+body.dsh-lg-on [class*="_treeRow"] button,
+body.dsh-lg-on [class*="_treeBody"] [class*="_actions"] button,
+body.dsh-lg-on [class*="_treeBody"] [class*="_action"] button,
+body.dsh-lg-on [class*="_treeRoot"] [class*="_actions"] button,
+body.dsh-lg-on [class*="_treeRoot"] [class*="_action"] button {
+  position: static !important;
+  isolation: auto !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+body.dsh-lg-on [class*="_treeBody"] button:hover,
+body.dsh-lg-on [class*="_treeItem"] button:hover,
+body.dsh-lg-on [class*="_treeNode"] button:hover,
+body.dsh-lg-on [class*="_treeRow"] button:hover,
+body.dsh-lg-on [class*="_treeBody"] [class*="_actions"] button:hover,
+body.dsh-lg-on [class*="_treeBody"] [class*="_action"] button:hover,
+body.dsh-lg-on [class*="_treeRoot"] [class*="_actions"] button:hover,
+body.dsh-lg-on [class*="_treeRoot"] [class*="_action"] button:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+body.dsh-lg-on [class*="_treeBody"] button::before,
+body.dsh-lg-on [class*="_treeBody"] button::after,
+body.dsh-lg-on [class*="_treeItem"] button::before,
+body.dsh-lg-on [class*="_treeItem"] button::after,
+body.dsh-lg-on [class*="_treeNode"] button::before,
+body.dsh-lg-on [class*="_treeNode"] button::after,
+body.dsh-lg-on [class*="_treeRow"] button::before,
+body.dsh-lg-on [class*="_treeRow"] button::after,
+body.dsh-lg-on [class*="_treeBody"] [class*="_actions"] button::before,
+body.dsh-lg-on [class*="_treeBody"] [class*="_actions"] button::after,
+body.dsh-lg-on [class*="_treeBody"] [class*="_action"] button::before,
+body.dsh-lg-on [class*="_treeBody"] [class*="_action"] button::after,
+body.dsh-lg-on [class*="_treeRoot"] [class*="_actions"] button::before,
+body.dsh-lg-on [class*="_treeRoot"] [class*="_actions"] button::after,
+body.dsh-lg-on [class*="_treeRoot"] [class*="_action"] button::before,
+body.dsh-lg-on [class*="_treeRoot"] [class*="_action"] button::after {
+  content: none !important;
+  display: none !important;
+}
+/* Sidebar footer & main settings trigger button (settings gear, collapse, panel rows):
+   Completely remove system outline, box-shadows, and glass pseudo-elements outside dialogs to avoid dark halos or borders. */
+body.dsh-lg-on :not([role="dialog"]) [class*="_footArea"] button,
+body.dsh-lg-on :not([role="dialog"]) [class*="_settingsArea"] button,
+body.dsh-lg-on :not([role="dialog"]) [class*="_triggerRow"] button,
+body.dsh-lg-on :not([role="dialog"]) [class*="_trigger"],
+body.dsh-lg-on :not([role="dialog"]) [class*="_panelRow"] {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+body.dsh-lg-on :not([role="dialog"]) [class*="_footArea"] button:focus,
+body.dsh-lg-on :not([role="dialog"]) [class*="_footArea"] button:focus-visible,
+body.dsh-lg-on :not([role="dialog"]) [class*="_settingsArea"] button:focus,
+body.dsh-lg-on :not([role="dialog"]) [class*="_settingsArea"] button:focus-visible,
+body.dsh-lg-on :not([role="dialog"]) [class*="_triggerRow"] button:focus,
+body.dsh-lg-on :not([role="dialog"]) [class*="_triggerRow"] button:focus-visible,
+body.dsh-lg-on :not([role="dialog"]) [class*="_trigger"]:focus,
+body.dsh-lg-on :not([role="dialog"]) [class*="_trigger"]:focus-visible,
+body.dsh-lg-on :not([role="dialog"]) [class*="_panelRow"]:focus,
+body.dsh-lg-on :not([role="dialog"]) [class*="_panelRow"]:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+body.dsh-lg-on :not([role="dialog"]) [class*="_footArea"] button:hover,
+body.dsh-lg-on :not([role="dialog"]) [class*="_settingsArea"] button:hover,
+body.dsh-lg-on :not([role="dialog"]) [class*="_triggerRow"] button:hover,
+body.dsh-lg-on :not([role="dialog"]) [class*="_trigger"]:hover {
+  background: var(--dsw-alias-interactive-bg-hover) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+body.dsh-lg-on :not([role="dialog"]) [class*="_trigger"][aria-expanded="true"],
+body.dsh-lg-on :not([role="dialog"]) [class*="_triggerRow"] button[aria-expanded="true"] {
+  background: var(--dsw-alias-interactive-bg-hover) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+body.dsh-lg-on :not([role="dialog"]) [class*="_trigger"]::before,
+body.dsh-lg-on :not([role="dialog"]) [class*="_trigger"]::after,
+body.dsh-lg-on :not([role="dialog"]) [class*="_triggerRow"] > button::before,
+body.dsh-lg-on :not([role="dialog"]) [class*="_triggerRow"] > button::after {
+  content: none !important;
+  display: none !important;
+}
+/* Sidebar tree items & Workbench TabBar (sessions, tasks, workspaces, workbench tabs) selected/active row: 75% transparency background */
+body.dsh-lg-on [class*="_treeBody"] [class*="_sessionRow"][class*="_selected"],
+body.dsh-lg-on [class*="_treeBody"] [class*="_sessionRow"][aria-selected="true"],
+body.dsh-lg-on [class*="_treeBody"] [class*="_projectRow"][class*="_selected"],
+body.dsh-lg-on [class*="_treeBody"] [class*="_projectRow"][aria-selected="true"],
+body.dsh-lg-on [class*="_treeBody"] [class*="_searchResultRow"][class*="_selected"],
+body.dsh-lg-on [class*="_treeBody"] [class*="_searchResultRow"][aria-selected="true"],
+body.dsh-lg-on [class*="_treeBody"] [role="treeitem"][aria-selected="true"],
+body.dsh-lg-on [class*="_treeBody"] [role="treeitem"][class*="_selected"],
+body.dsh-lg-on [class*="_treeBody"] [data-selected="true"],
+body.dsh-lg-on [class*="_treeBody"] [data-active="true"],
+body.dsh-lg-on [class*="_treeRoot"] [role="treeitem"][aria-selected="true"],
+body.dsh-lg-on [class*="_treeRoot"] [class*="_selected"],
+body.dsh-lg-on [data-dsh-panel-host] [class*="_tabActive"],
+body.dsh-lg-on [class*="_workbench"] [class*="_tabActive"],
+body.dsh-lg-on [class*="_pane"] [class*="_tabActive"],
+body.dsh-lg-on [class*="_bottomPanel"] [class*="_tabActive"] {
+  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 25%, transparent) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+body[data-ds-dark-theme].dsh-lg-on [class*="_treeBody"] [class*="_sessionRow"][class*="_selected"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_treeBody"] [class*="_sessionRow"][aria-selected="true"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_treeBody"] [class*="_projectRow"][class*="_selected"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_treeBody"] [class*="_projectRow"][aria-selected="true"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_treeBody"] [class*="_searchResultRow"][class*="_selected"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_treeBody"] [class*="_searchResultRow"][aria-selected="true"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_treeBody"] [role="treeitem"][aria-selected="true"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_treeBody"] [role="treeitem"][class*="_selected"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_treeBody"] [data-selected="true"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_treeBody"] [data-active="true"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_treeRoot"] [role="treeitem"][aria-selected="true"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_treeRoot"] [class*="_selected"],
+body[data-ds-dark-theme].dsh-lg-on [data-dsh-panel-host] [class*="_tabActive"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_workbench"] [class*="_tabActive"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_pane"] [class*="_tabActive"],
+body[data-ds-dark-theme].dsh-lg-on [class*="_bottomPanel"] [class*="_tabActive"] {
+  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #000000) 25%, transparent) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ==========================================================================
+   Tab Navigation & Segmented Controls (下划线导航 Tab 与分段胶囊选择器分离规范)
+   1. 下划线导航 Tab（如设置页「插件配置 / 插件列表」、卡片内「状态/上下文/明细/签到」）：
+      必须保持纯透明背景，绝对不加卡片外框、圆角或阴影，完整保留原汁原味的下划线指示条。
+   2. 分段胶囊选择器（如「国内版 / 国际版」变体切换器、RadioGroup、ToggleGroup）：
+      激活项呈现高对比度毛玻璃药丸卡片背景与圆角细边框，绝不下划线；未激活项透明。
+   ========================================================================== */
+
+/* 1. 下划线导航 Tab 基础与未选中状态：纯透明、无卡片外框、无圆角、无阴影 */
+body.dsh-lg-on [class*="_tabs"] [class*="_tab"],
+body.dsh-lg-on [role="tablist"]:not(header [role="tablist"]):not([aria-label*="Version" i]):not([aria-label*="Selection" i]):not([aria-label*="Variant" i]):not([aria-label*="版本" i]):not([aria-label*="选择" i]):not([class*="segmented" i]):not([class*="toggle" i]):not([class*="wbp-tabs"]) [role="tab"]:not([style*="border-radius"]):not([style*="borderRadius"]) {
+  background: transparent !important;
+  background-color: transparent !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--dsw-alias-label-secondary, rgba(255, 255, 255, 0.65)) !important;
+  transition: color 0.15s ease !important;
+}
+
+/* 1.1 下划线导航 Tab 悬停状态：平滑提亮文字，保持纯透明背景无外框 */
+body.dsh-lg-on [class*="_tabs"] [class*="_tab"]:hover,
+body.dsh-lg-on [role="tablist"]:not(header [role="tablist"]):not([aria-label*="Version" i]):not([aria-label*="Selection" i]):not([aria-label*="Variant" i]):not([aria-label*="版本" i]):not([aria-label*="选择" i]):not([class*="segmented" i]):not([class*="toggle" i]):not([class*="wbp-tabs"]) [role="tab"]:not([style*="border-radius"]):not([style*="borderRadius"]):hover {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+  color: var(--dsw-alias-label-primary, #ffffff) !important;
+}
+
+/* 1.2 下划线导航 Tab 激活/选中状态：纯文字纯白高亮，背景透明，绝对无背景卡片框 */
+body.dsh-lg-on [class*="_tabs"] [class*="_tab"]:is([data-active="true"], [aria-selected="true"], [data-state="active"]),
+body.dsh-lg-on [role="tablist"]:not(header [role="tablist"]):not([aria-label*="Version" i]):not([aria-label*="Selection" i]):not([aria-label*="Variant" i]):not([aria-label*="版本" i]):not([aria-label*="选择" i]):not([class*="segmented" i]):not([class*="toggle" i]):not([class*="wbp-tabs"]) [role="tab"]:not([style*="border-radius"]):not([style*="borderRadius"]):is([data-active="true"], [aria-selected="true"], [data-state="active"]) {
+  background: transparent !important;
+  background-color: transparent !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--dsw-alias-label-primary, #ffffff) !important;
+  font-weight: 600 !important;
+}
+
+/* 1.3 确保原生 DSH 设置二级导航（如「插件配置 / 插件列表」）底部的 ::after 白色指示线明亮清晰 */
+body.dsh-lg-on [class*="_tabs"] [class*="_tab"]:is([data-active="true"], [aria-selected="true"])::after {
+  background: var(--dsw-alias-label-primary, #ffffff) !important;
+  opacity: 1 !important;
+}
+
+/* 1.4 卡片内下划线 Tab（如 WorkBuddy「状态/上下文窗口/额度明细/签到日志」）保持底部指示线高亮 */
+body.dsh-lg-on [role="tablist"]:not(header [role="tablist"]):not([aria-label*="Version" i]):not([aria-label*="Selection" i]):not([aria-label*="Variant" i]):not([aria-label*="版本" i]):not([aria-label*="选择" i]):not([class*="segmented" i]):not([class*="toggle" i]):not([class*="wbp-tabs"]) [role="tab"]:not([class*="_tab"]):not([style*="border-radius"]):not([style*="borderRadius"]):is([data-active="true"], [aria-selected="true"], [data-state="active"]) {
+  border-bottom: 2px solid var(--dsw-alias-brand-primary, #ffffff) !important;
+}
+
+/* ==========================================================================
+   2. 分段胶囊选择器（Segmented Control / Pill Switcher，如「国内版 / 国际版」变体切换）
+   ========================================================================== */
+
+/* 2.1 分段胶囊容器（底槽）：微暗半透明圆角凹槽，保证在液态玻璃下边界清晰 */
+body.dsh-lg-on [role="tablist"][aria-label*="Version" i],
+body.dsh-lg-on [role="tablist"][aria-label*="Selection" i],
+body.dsh-lg-on [role="tablist"][aria-label*="Variant" i],
+body.dsh-lg-on [role="tablist"][aria-label*="版本" i],
+body.dsh-lg-on [role="tablist"][aria-label*="选择" i],
+body.dsh-lg-on [class*="wbp-tabs"],
+body.dsh-lg-on [class*="segmented" i]:not(button),
+body.dsh-lg-on [role="radiogroup"] {
+  background: rgba(0, 0, 0, 0.28) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  padding: 3px !important;
+}
+
+/* 2.2 分段胶囊子项交互过渡动画 */
+body.dsh-lg-on [role="tablist"][aria-label*="Version" i] [role="tab"],
+body.dsh-lg-on [role="tablist"][aria-label*="Selection" i] [role="tab"],
+body.dsh-lg-on [role="tablist"][aria-label*="Variant" i] [role="tab"],
+body.dsh-lg-on [role="tablist"][aria-label*="WorkBuddy" i] [role="tab"],
+body.dsh-lg-on [role="tablist"][aria-label*="版本" i] [role="tab"],
+body.dsh-lg-on [role="tablist"][aria-label*="选择" i] [role="tab"],
+body.dsh-lg-on [role="tablist"] [role="tab"][style*="border-radius"],
+body.dsh-lg-on [role="tablist"] [role="tab"][style*="borderRadius"],
+body.dsh-lg-on [class*="wbp-tabs"] [role="tab"],
+body.dsh-lg-on [class*="wbp-tab"],
+body.dsh-lg-on [class*="segmented" i] button,
+body.dsh-lg-on [class*="Segmented"] button,
+body.dsh-lg-on [class*="segmented" i] [role="tab"],
+body.dsh-lg-on [class*="Segmented"] [role="tab"],
+body.dsh-lg-on [class*="toggleGroup" i] button,
+body.dsh-lg-on [class*="toggle" i] button,
+body.dsh-lg-on [class*="pill" i] [role="tab"],
+body.dsh-lg-on [class*="capsule" i] [role="tab"],
+body.dsh-lg-on [role="radiogroup"] [role="radio"],
+body.dsh-lg-on [role="radiogroup"] button {
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+/* 2.3 分段胶囊未激活项：透明底、透明边框、圆角药丸 */
+body.dsh-lg-on [role="tablist"][aria-label*="Version" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]),
+body.dsh-lg-on [role="tablist"][aria-label*="Selection" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]),
+body.dsh-lg-on [role="tablist"][aria-label*="Variant" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]),
+body.dsh-lg-on [role="tablist"][aria-label*="WorkBuddy" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]),
+body.dsh-lg-on [role="tablist"][aria-label*="版本" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]),
+body.dsh-lg-on [role="tablist"][aria-label*="选择" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]),
+body.dsh-lg-on [role="tablist"] [role="tab"][style*="border-radius"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]),
+body.dsh-lg-on [role="tablist"] [role="tab"][style*="borderRadius"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]),
+body.dsh-lg-on [class*="wbp-tabs"] [role="tab"]:not([class*="Active"]):not([aria-selected="true"]):not([data-state="active"]),
+body.dsh-lg-on [class*="wbp-tab"]:not([class*="Active"]):not([aria-selected="true"]):not([data-state="active"]),
+body.dsh-lg-on [class*="segmented" i] button:not([aria-selected="true"]):not([data-state="active"]):not([class*="Active"]),
+body.dsh-lg-on [class*="Segmented"] button:not([aria-selected="true"]):not([data-state="active"]):not([class*="Active"]),
+body.dsh-lg-on [class*="toggleGroup" i] button:not([aria-selected="true"]):not([data-state="active"]):not([class*="Active"]),
+body.dsh-lg-on [class*="toggle" i] button:not([aria-selected="true"]):not([data-state="active"]):not([class*="Active"]),
+body.dsh-lg-on [class*="pill" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]),
+body.dsh-lg-on [class*="capsule" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]),
+body.dsh-lg-on [role="radiogroup"] [role="radio"]:not([aria-checked="true"]):not([data-state="checked"]):not([data-checked="true"]),
+body.dsh-lg-on [role="radiogroup"] button:not([aria-checked="true"]):not([data-state="checked"]):not([data-checked="true"]) {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  color: var(--dsw-alias-label-secondary, rgba(255, 255, 255, 0.65)) !important;
+}
+
+/* 2.4 分段胶囊未激活项悬停态 */
+body.dsh-lg-on [role="tablist"][aria-label*="Version" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]):hover,
+body.dsh-lg-on [role="tablist"][aria-label*="Selection" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]):hover,
+body.dsh-lg-on [role="tablist"][aria-label*="Variant" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]):hover,
+body.dsh-lg-on [role="tablist"][aria-label*="WorkBuddy" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]):hover,
+body.dsh-lg-on [role="tablist"][aria-label*="版本" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]):hover,
+body.dsh-lg-on [role="tablist"][aria-label*="选择" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]):hover,
+body.dsh-lg-on [role="tablist"] [role="tab"][style*="border-radius"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]):hover,
+body.dsh-lg-on [role="tablist"] [role="tab"][style*="borderRadius"]:not([aria-selected="true"]):not([data-state="active"]):not([data-active="true"]):hover,
+body.dsh-lg-on [class*="wbp-tabs"] [role="tab"]:not([class*="Active"]):not([aria-selected="true"]):not([data-state="active"]):hover,
+body.dsh-lg-on [class*="wbp-tab"]:not([class*="Active"]):not([aria-selected="true"]):not([data-state="active"]):hover,
+body.dsh-lg-on [class*="segmented" i] button:not([aria-selected="true"]):not([data-state="active"]):not([class*="Active"]):hover,
+body.dsh-lg-on [class*="Segmented"] button:not([aria-selected="true"]):not([data-state="active"]):not([class*="Active"]):hover,
+body.dsh-lg-on [class*="toggleGroup" i] button:not([aria-selected="true"]):not([data-state="active"]):not([class*="Active"]):hover,
+body.dsh-lg-on [class*="toggle" i] button:not([aria-selected="true"]):not([data-state="active"]):not([class*="Active"]):hover,
+body.dsh-lg-on [class*="pill" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):hover,
+body.dsh-lg-on [class*="capsule" i] [role="tab"]:not([aria-selected="true"]):not([data-state="active"]):hover,
+body.dsh-lg-on [role="radiogroup"] [role="radio"]:not([aria-checked="true"]):not([data-state="checked"]):not([data-checked="true"]):hover,
+body.dsh-lg-on [role="radiogroup"] button:not([aria-checked="true"]):not([data-state="checked"]):not([data-checked="true"]):hover {
+  background: var(--dsw-alias-interactive-bg-hover, rgba(255, 255, 255, 0.10)) !important;
+  color: var(--dsw-alias-label-primary, #ffffff) !important;
+}
+
+/* 2.5 分段胶囊激活/选中项（Active Pill）：高对比度药丸卡片背景、圆角、立体浮起边框阴影、绝对不下划线 */
+body.dsh-lg-on [role="tablist"][aria-label*="Version" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body.dsh-lg-on [role="tablist"][aria-label*="Selection" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body.dsh-lg-on [role="tablist"][aria-label*="Variant" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body.dsh-lg-on [role="tablist"][aria-label*="WorkBuddy" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body.dsh-lg-on [role="tablist"][aria-label*="版本" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body.dsh-lg-on [role="tablist"][aria-label*="选择" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body.dsh-lg-on [role="tablist"] [role="tab"][style*="border-radius"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body.dsh-lg-on [role="tablist"] [role="tab"][style*="borderRadius"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body.dsh-lg-on [class*="wbp-tabs"] [role="tab"]:is([class*="Active"], [aria-selected="true"], [data-state="active"]),
+body.dsh-lg-on [class*="wbp-tab"]:is([class*="Active"], [aria-selected="true"], [data-state="active"]),
+body.dsh-lg-on [class*="segmented" i] button:is([aria-selected="true"], [data-state="active"], [class*="Active"]),
+body.dsh-lg-on [class*="Segmented"] button:is([aria-selected="true"], [data-state="active"], [class*="Active"]),
+body.dsh-lg-on [class*="segmented" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [class*="Active"]),
+body.dsh-lg-on [class*="Segmented"] [role="tab"]:is([aria-selected="true"], [data-state="active"], [class*="Active"]),
+body.dsh-lg-on [class*="toggleGroup" i] button:is([aria-selected="true"], [data-state="active"], [class*="Active"]),
+body.dsh-lg-on [class*="toggle" i] button:is([aria-selected="true"], [data-state="active"], [class*="Active"]),
+body.dsh-lg-on [class*="pill" i] [role="tab"]:is([aria-selected="true"], [data-state="active"]),
+body.dsh-lg-on [class*="capsule" i] [role="tab"]:is([aria-selected="true"], [data-state="active"]),
+body.dsh-lg-on [role="radiogroup"] [role="radio"]:is([aria-checked="true"], [data-state="checked"], [data-checked="true"]),
+body.dsh-lg-on [role="radiogroup"] button:is([aria-checked="true"], [data-state="checked"], [data-checked="true"]) {
+  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 24%, rgba(255, 255, 255, 0.20)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.22) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+/* 2.6 暗色主题下的激活分段胶囊高光 */
+body[data-ds-dark-theme].dsh-lg-on [role="tablist"][aria-label*="Version" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body[data-ds-dark-theme].dsh-lg-on [role="tablist"][aria-label*="Selection" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body[data-ds-dark-theme].dsh-lg-on [role="tablist"][aria-label*="Variant" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body[data-ds-dark-theme].dsh-lg-on [role="tablist"][aria-label*="WorkBuddy" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body[data-ds-dark-theme].dsh-lg-on [role="tablist"][aria-label*="版本" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body[data-ds-dark-theme].dsh-lg-on [role="tablist"][aria-label*="选择" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body[data-ds-dark-theme].dsh-lg-on [role="tablist"] [role="tab"][style*="border-radius"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body[data-ds-dark-theme].dsh-lg-on [role="tablist"] [role="tab"][style*="borderRadius"]:is([aria-selected="true"], [data-state="active"], [data-active="true"]),
+body[data-ds-dark-theme].dsh-lg-on [class*="wbp-tabs"] [role="tab"]:is([class*="Active"], [aria-selected="true"], [data-state="active"]),
+body[data-ds-dark-theme].dsh-lg-on [class*="wbp-tab"]:is([class*="Active"], [aria-selected="true"], [data-state="active"]),
+body[data-ds-dark-theme].dsh-lg-on [class*="segmented" i] button:is([aria-selected="true"], [data-state="active"], [class*="Active"]),
+body[data-ds-dark-theme].dsh-lg-on [class*="Segmented"] button:is([aria-selected="true"], [data-state="active"], [class*="Active"]),
+body[data-ds-dark-theme].dsh-lg-on [class*="segmented" i] [role="tab"]:is([aria-selected="true"], [data-state="active"], [class*="Active"]),
+body[data-ds-dark-theme].dsh-lg-on [class*="Segmented"] [role="tab"]:is([aria-selected="true"], [data-state="active"], [class*="Active"]),
+body[data-ds-dark-theme].dsh-lg-on [class*="toggleGroup" i] button:is([aria-selected="true"], [data-state="active"], [class*="Active"]),
+body[data-ds-dark-theme].dsh-lg-on [class*="toggle" i] button:is([aria-selected="true"], [data-state="active"], [class*="Active"]),
+body[data-ds-dark-theme].dsh-lg-on [class*="pill" i] [role="tab"]:is([aria-selected="true"], [data-state="active"]),
+body[data-ds-dark-theme].dsh-lg-on [class*="capsule" i] [role="tab"]:is([aria-selected="true"], [data-state="active"]),
+body[data-ds-dark-theme].dsh-lg-on [role="radiogroup"] [role="radio"]:is([aria-checked="true"], [data-state="checked"], [data-checked="true"]),
+body[data-ds-dark-theme].dsh-lg-on [role="radiogroup"] button:is([aria-checked="true"], [data-state="checked"], [data-checked="true"]) {
+  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #ffffff) 22%, rgba(255, 255, 255, 0.18)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.30) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.50), inset 0 0 0 1px rgba(255, 255, 255, 0.20) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+/* 2.7 分段胶囊绝不下划线：彻底隐藏伪元素底线，避免与下划线导航混淆 */
+body.dsh-lg-on [role="tablist"][aria-label*="Version" i] [role="tab"]::after,
+body.dsh-lg-on [role="tablist"][aria-label*="Selection" i] [role="tab"]::after,
+body.dsh-lg-on [role="tablist"][aria-label*="Variant" i] [role="tab"]::after,
+body.dsh-lg-on [role="tablist"][aria-label*="WorkBuddy" i] [role="tab"]::after,
+body.dsh-lg-on [role="tablist"][aria-label*="版本" i] [role="tab"]::after,
+body.dsh-lg-on [role="tablist"][aria-label*="选择" i] [role="tab"]::after,
+body.dsh-lg-on [role="tablist"] [role="tab"][style*="border-radius"]::after,
+body.dsh-lg-on [role="tablist"] [role="tab"][style*="borderRadius"]::after,
+body.dsh-lg-on [class*="wbp-tabs"] [role="tab"]::after,
+body.dsh-lg-on [class*="wbp-tab"]::after,
+body.dsh-lg-on [class*="segmented" i] button::after,
+body.dsh-lg-on [class*="Segmented"] button::after,
+body.dsh-lg-on [class*="toggleGroup" i] button::after,
+body.dsh-lg-on [role="radiogroup"] button::after {
+  display: none !important;
+}
+
+/* Water-drop icon for Liquid Glass settings section: pure CSS mask without DOM tearing */
+[role="dialog"] [data-dsh-liquid-glass-settings-nav]:not([data-dsh-icon-theme-managed]) > svg:first-child {
+  display: none !important;
+}
+[role="dialog"] [data-dsh-liquid-glass-settings-nav]:not([data-dsh-icon-theme-managed])::before {
+  content: "" !important;
+  display: inline-block !important;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* Settings dialog left-hand navigation items: strictly borderless, transparent, and clean without cards */
+body.dsh-lg-on [role="dialog"] > div > div:first-child button,
+body.dsh-lg-on [role="dialog"] [role="navigation"] button,
+body.dsh-lg-on [role="dialog"] [class*="nav"] button,
+body.dsh-lg-on [role="dialog"] [class*="side"] button,
+body.dsh-lg-on [role="dialog"] [class*="menu"] button,
+body.dsh-lg-on [role="dialog"] [class*="list"] button,
+body.dsh-lg-on [role="dialog"] aside button,
+body.dsh-lg-on [role="dialog"] [data-dsh-liquid-glass-settings-nav] {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  color: var(--dsw-alias-label-secondary) !important;
+  transform: none !important;
+  border-radius: 8px !important;
+}
+body.dsh-lg-on [role="dialog"] > div > div:first-child button:hover,
+body.dsh-lg-on [role="dialog"] [role="navigation"] button:hover,
+body.dsh-lg-on [role="dialog"] [class*="nav"] button:hover,
+body.dsh-lg-on [role="dialog"] [class*="side"] button:hover,
+body.dsh-lg-on [role="dialog"] [class*="menu"] button:hover,
+body.dsh-lg-on [role="dialog"] [class*="list"] button:hover,
+body.dsh-lg-on [role="dialog"] aside button:hover,
+body.dsh-lg-on [role="dialog"] [data-dsh-liquid-glass-settings-nav]:hover {
+  background: var(--dsw-alias-interactive-bg-hover, rgba(255, 255, 255, 0.10)) !important;
+  color: var(--dsw-alias-label-primary, #ffffff) !important;
+  box-shadow: none !important;
+  border: none !important;
+  transform: none !important;
+}
+body.dsh-lg-on [role="dialog"] > div > div:first-child button[aria-selected="true"],
+body.dsh-lg-on [role="dialog"] > div > div:first-child button[data-selected="true"],
+body.dsh-lg-on [role="dialog"] [class*="nav"] button[aria-selected="true"],
+body.dsh-lg-on [role="dialog"] [class*="sidebar"] button[aria-selected="true"],
+body.dsh-lg-on [role="dialog"] aside button[aria-selected="true"],
+body.dsh-lg-on [role="dialog"] [class*="nav"] button[data-selected="true"],
+body.dsh-lg-on [role="dialog"] [class*="sidebar"] button[data-selected="true"],
+body.dsh-lg-on [role="dialog"] [data-dsh-liquid-glass-settings-nav][aria-selected="true"],
+body.dsh-lg-on [role="dialog"] [data-dsh-liquid-glass-settings-nav][data-selected="true"] {
+  background: var(--dsw-alias-interactive-bg-active, rgba(255, 255, 255, 0.14)) !important;
+  color: var(--dsw-alias-brand-primary, #3b82f6) !important;
+  box-shadow: none !important;
+  border: none !important;
+  font-weight: 600 !important;
+}
+/* Settings dialog right-hand content area action buttons (file pickers, restore defaults, test buttons, etc.):
+   Scoped strictly to form, section, group, and content wrappers. */
+body.dsh-lg-on [role="dialog"] :is(form, section, [class*="content"], [class*="panel"], [class*="group"], [class*="body"], [class*="field"]) button:not([role="switch"]):not([role="tab"]):not([data-dsh-liquid-glass-settings-nav]):not([aria-label*="关闭" i]):not([aria-label*="close" i]) {
+  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 14%, rgba(0, 0, 0, 0.05)) !important;
+  color: var(--dsw-alias-label-primary, #ffffff) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, filter 0.15s ease !important;
+  cursor: pointer !important;
+}
+body[data-ds-dark-theme].dsh-lg-on [role="dialog"] :is(form, section, [class*="content"], [class*="panel"], [class*="group"], [class*="body"], [class*="field"]) button:not([role="switch"]):not([role="tab"]):not([data-dsh-liquid-glass-settings-nav]):not([aria-label*="关闭" i]):not([aria-label*="close" i]) {
+  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #ffffff) 18%, rgba(255, 255, 255, 0.08)) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+  color: #ffffff !important;
+}
+body.dsh-lg-on [role="dialog"] :is(form, section, [class*="content"], [class*="panel"], [class*="group"], [class*="body"], [class*="field"]) button:not([role="switch"]):not([role="tab"]):not([data-dsh-liquid-glass-settings-nav]):not([aria-label*="关闭" i]):not([aria-label*="close" i]):hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 26%, rgba(255, 255, 255, 0.16)) !important;
+  border-color: rgba(255, 255, 255, 0.32) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.24) !important;
+  color: #ffffff !important;
+  filter: brightness(1.12) !important;
+  transform: translateY(-1px) !important;
+}
+body[data-ds-dark-theme].dsh-lg-on [role="dialog"] :is(form, section, [class*="content"], [class*="panel"], [class*="group"], [class*="body"], [class*="field"]) button:not([role="switch"]):not([role="tab"]):not([data-dsh-liquid-glass-settings-nav]):not([aria-label*="关闭" i]):not([aria-label*="close" i]):hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #ffffff) 28%, rgba(255, 255, 255, 0.20)) !important;
+  border-color: rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.20) !important;
+  color: #ffffff !important;
+  filter: brightness(1.15) !important;
+  transform: translateY(-1px) !important;
+}
+body.dsh-lg-on [role="dialog"] :is(form, section, [class*="content"], [class*="panel"], [class*="group"], [class*="body"], [class*="field"]) button:not([role="switch"]):not([role="tab"]):not([data-dsh-liquid-glass-settings-nav]):not([aria-label*="关闭" i]):not([aria-label*="close" i]):active:not(:disabled) {
+  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 16%, rgba(0, 0, 0, 0.15)) !important;
+  border-color: rgba(255, 255, 255, 0.20) !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.30) !important;
+  transform: translateY(0) !important;
+}
 /* Sandbox mode trigger button: explicitly strip any glass effect so its
    dropdown menu (position:fixed) is not affected by backdrop-filter creating
    a new containing block. */
-body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button[aria-label*="访问模式" i],
-body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button[aria-label*="Access mode" i] {
+body.dsh-lg-on button[aria-label*="访问模式" i],
+body.dsh-lg-on button[aria-label*="Access mode" i] {
   position: static !important;
   isolation: auto !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
-body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button[aria-label*="访问模式" i]::before,
-body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button[aria-label*="Access mode" i]::before {
+body.dsh-lg-on button[aria-label*="访问模式" i]::before,
+body.dsh-lg-on button[aria-label*="Access mode" i]::before {
   display: none !important;
 }
 /* Sidebar logo / branding: exclude from the liquid glass effect — the square
@@ -1541,6 +2227,7 @@ function applyCore(ctx: ClientContext): void {
   // being enabled and retracted on dispose.
   client.effect(() => {
     let observer: MutationObserver | undefined;
+    let scheduled = false;
     const navigate = (): void => {
       if (!document.body.classList.contains('dsh-lg-on')) return;
       const menu = document.querySelector<HTMLElement>('[data-composer-card] [role="menu"]');
@@ -1584,10 +2271,14 @@ function applyCore(ctx: ClientContext): void {
       });
     };
 
-    // Catch the menu being added/removed, and re-run once after React settles.
+    // Catch the menu being added/removed with microtask debouncing.
     observer = new MutationObserver(() => {
-      navigate();
-      requestAnimationFrame(() => navigate());
+      if (scheduled) return;
+      scheduled = true;
+      queueMicrotask(() => {
+        scheduled = false;
+        navigate();
+      });
     });
     observer.observe(document.body, { childList: true, subtree: true });
 
@@ -1616,36 +2307,36 @@ function applyCore(ctx: ClientContext): void {
   // Water-drop settings icon. The settings shell picks a nav glyph per section
   // id via a HARD-CODED map (see `navIcon` in dsh-client-ui-settings-general):
   // ids it doesn't know — including ours, `liquid-glass` — all fall back to the
-  // settings GEAR (IconSettingsOutline16). We can't add our id to that compiled
-  // map without forking the shell, so this effect swaps the gear in OUR section's
-  // nav row for a water-drop (Lucide "droplet", ISC license) at render time. A
-  // MutationObserver re-applies it whenever the settings dialog re-renders (the
-  // shell re-mounts the row on selection/locale changes, dropping our svg back
-  // to the gear); the `.lg-watermark` class is the guard that stops a replace
-  // loop (we only write when our marker is absent). Disposed with the fiber.
+  // settings GEAR (IconSettingsOutline16). Instead of modifying innerHTML directly
+  // (which causes an infinite re-render loop with dsh-icon-theme), we tag our section's
+  // button with `data-dsh-liquid-glass-settings-nav` and let pure CSS mask render
+  // the water-drop icon.
   client.effect(() => {
-    const applyIcon = (): void => {
-      if (!document.body.classList.contains('dsh-lg-on')) return;
-      // The Liquid Glass section nav label we registered — the match key for
-      // our row. (The button's textContent is exactly this, since the icon svg
-      // contributes no text.)
-      const OUR_LABEL = '液态玻璃';
+    let scheduled = false;
+    const markNav = (): void => {
       const dialog = document.querySelector<HTMLElement>('[role="dialog"]');
       if (!dialog) return;
+
+      const OUR_LABELS = new Set(['液态玻璃', 'Liquid Glass', 'liquid-glass']);
       const cell = Array.from(dialog.querySelectorAll<HTMLButtonElement>('button')).find(
-        (b) => b.textContent?.trim() === OUR_LABEL,
+        (b) => {
+          const text = b.textContent?.trim();
+          return text ? OUR_LABELS.has(text) : false;
+        },
       );
       if (!cell) return;
-      const iconSlot = cell.firstElementChild;
-      if (!iconSlot) return;
-      if (cell.querySelector('.lg-watermark')) return; // already ours
-      iconSlot.innerHTML =
-        '<svg class="lg-watermark" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>';
+      if (cell.hasAttribute('data-dsh-liquid-glass-settings-nav')) return; // already marked
+      cell.setAttribute('data-dsh-liquid-glass-settings-nav', '');
     };
-    applyIcon();
+
+    markNav();
     const observer = new MutationObserver(() => {
-      applyIcon();
-      requestAnimationFrame(() => applyIcon());
+      if (scheduled) return;
+      scheduled = true;
+      queueMicrotask(() => {
+        scheduled = false;
+        markNav();
+      });
     });
     observer.observe(document.body, { childList: true, subtree: true });
     return () => {
