@@ -1032,9 +1032,10 @@ body[data-ds-dark-theme].dsh-lg-on [class*="_bottomPanel"] [class*="_tabActive"]
       激活项呈现高对比度毛玻璃药丸卡片背景与圆角细边框，绝不下划线；未激活项透明。
    ========================================================================== */
 
-/* 1. 下划线导航 Tab 基础与未选中状态：纯透明、无卡片外框、无圆角、无阴影 */
+/* 1. 下划线导航 Tab 基础与未选中状态：纯透明、无卡片外框、无圆角、无阴影
+   严格限定于水平导航 Tab（如设置二级导航、卡片水平 Tab），排除垂直侧栏与模型选择器供应商列表 */
 body.dsh-lg-on [class*="_tabs"] [class*="_tab"],
-body.dsh-lg-on :not(header) > [role="tablist"]:not([class*="segmented" i]):not([class*="toggle" i]):not([class*="wbp-tabs"]):not([role="radiogroup"]) [role="tab"]:not([style*="border-radius"]):not([style*="borderRadius"]) {
+body.dsh-lg-on :not(header) > [role="tablist"]:not([aria-orientation="vertical"]):not([role="menu"] *):not([class*="model" i] *):not([class*="provider" i] *):not([class*="segmented" i]):not([class*="toggle" i]):not([class*="wbp-tabs"]):not([role="radiogroup"]) [role="tab"]:not([style*="border-radius"]):not([style*="borderRadius"]) {
   background: transparent !important;
   background-color: transparent !important;
   border-top: none !important;
@@ -1048,7 +1049,7 @@ body.dsh-lg-on :not(header) > [role="tablist"]:not([class*="segmented" i]):not([
 
 /* 1.1 下划线导航 Tab 悬停状态：平滑提亮文字，保持纯透明背景无外框 */
 body.dsh-lg-on [class*="_tabs"] [class*="_tab"]:hover,
-body.dsh-lg-on :not(header) > [role="tablist"]:not([class*="segmented" i]):not([class*="toggle" i]):not([class*="wbp-tabs"]):not([role="radiogroup"]) [role="tab"]:not([style*="border-radius"]):not([style*="borderRadius"]):hover {
+body.dsh-lg-on :not(header) > [role="tablist"]:not([aria-orientation="vertical"]):not([role="menu"] *):not([class*="model" i] *):not([class*="provider" i] *):not([class*="segmented" i]):not([class*="toggle" i]):not([class*="wbp-tabs"]):not([role="radiogroup"]) [role="tab"]:not([style*="border-radius"]):not([style*="borderRadius"]):hover {
   background: transparent !important;
   background-color: transparent !important;
   box-shadow: none !important;
@@ -1058,7 +1059,7 @@ body.dsh-lg-on :not(header) > [role="tablist"]:not([class*="segmented" i]):not([
 
 /* 1.2 下划线导航 Tab 激活/选中状态：纯文字纯白高亮，背景透明，绝对无背景卡片框 */
 body.dsh-lg-on [class*="_tabs"] [class*="_tab"]:is([data-active="true"], [aria-selected="true"], [data-state="active"]),
-body.dsh-lg-on :not(header) > [role="tablist"]:not([class*="segmented" i]):not([class*="toggle" i]):not([class*="wbp-tabs"]):not([role="radiogroup"]) [role="tab"]:not([style*="border-radius"]):not([style*="borderRadius"]):is([data-active="true"], [aria-selected="true"], [data-state="active"]) {
+body.dsh-lg-on :not(header) > [role="tablist"]:not([aria-orientation="vertical"]):not([role="menu"] *):not([class*="model" i] *):not([class*="provider" i] *):not([class*="segmented" i]):not([class*="toggle" i]):not([class*="wbp-tabs"]):not([role="radiogroup"]) [role="tab"]:not([style*="border-radius"]):not([style*="borderRadius"]):is([data-active="true"], [aria-selected="true"], [data-state="active"]) {
   background: transparent !important;
   background-color: transparent !important;
   border-top: none !important;
@@ -1077,7 +1078,7 @@ body.dsh-lg-on [class*="_tabs"] [class*="_tab"]:is([data-active="true"], [aria-s
 }
 
 /* 1.4 卡片内下划线 Tab（如 WorkBuddy「状态/上下文窗口/额度明细/签到日志」）保持底部指示线高亮 */
-body.dsh-lg-on :not(header) > [role="tablist"]:not([class*="segmented" i]):not([class*="toggle" i]):not([class*="wbp-tabs"]):not([role="radiogroup"]) [role="tab"]:not([class*="_tab"]):not([style*="border-radius"]):not([style*="borderRadius"]):is([data-active="true"], [aria-selected="true"], [data-state="active"]) {
+body.dsh-lg-on :not(header) > [role="tablist"]:not([aria-orientation="vertical"]):not([role="menu"] *):not([class*="model" i] *):not([class*="provider" i] *):not([class*="segmented" i]):not([class*="toggle" i]):not([class*="wbp-tabs"]):not([role="radiogroup"]) [role="tab"]:not([class*="_tab"]):not([style*="border-radius"]):not([style*="borderRadius"]):is([data-active="true"], [aria-selected="true"], [data-state="active"]) {
   border-bottom: 2px solid var(--dsw-alias-brand-primary, #ffffff) !important;
 }
 
@@ -1249,6 +1250,47 @@ body.dsh-lg-on [role="radiogroup"] button::after {
   display: none !important;
 }
 
+/* ==========================================================================
+   3. 模型选择器供应商分类列表（Provider Navigation List，如模型面板左侧栏）
+   保持原生的高对比度圆角差异色半透明背景高亮，绝不下划线，完整展示左栏分类
+   ========================================================================== */
+body.dsh-lg-on [data-composer-card] [role="menu"] [role="tablist"] [role="tab"],
+body.dsh-lg-on [data-composer-card] [role="menu"] [class*="provider" i] [role="tab"],
+body.dsh-lg-on [data-composer-card] [role="menu"] [class*="provider" i] button {
+  background: transparent !important;
+  border-radius: 8px !important;
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  color: var(--dsw-alias-label-secondary, rgba(255, 255, 255, 0.70)) !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+}
+body.dsh-lg-on [data-composer-card] [role="menu"] [role="tablist"] [role="tab"]:hover,
+body.dsh-lg-on [data-composer-card] [role="menu"] [class*="provider" i] [role="tab"]:hover,
+body.dsh-lg-on [data-composer-card] [role="menu"] [class*="provider" i] button:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+body.dsh-lg-on [data-composer-card] [role="menu"] [role="tablist"] [role="tab"]:is([aria-selected="true"], [data-active="true"], [data-selected="true"], [class*="active" i], [class*="selected" i]),
+body.dsh-lg-on [data-composer-card] [role="menu"] [class*="provider" i] [role="tab"]:is([aria-selected="true"], [data-active="true"], [data-selected="true"], [class*="active" i], [class*="selected" i]),
+body.dsh-lg-on [data-composer-card] [role="menu"] [class*="provider" i] button:is([aria-selected="true"], [data-active="true"], [data-selected="true"], [class*="active" i], [class*="selected" i]) {
+  background: rgba(255, 255, 255, 0.16) !important;
+  border-radius: 8px !important;
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+body.dsh-lg-on [data-composer-card] [role="menu"] [role="tablist"] [role="tab"]::after,
+body.dsh-lg-on [data-composer-card] [role="menu"] [class*="provider" i] [role="tab"]::after {
+  display: none !important;
+  content: none !important;
+}
+
 /* Water-drop icon for Liquid Glass settings section: pure CSS mask without DOM tearing */
 [role="dialog"] [data-dsh-liquid-glass-settings-nav]:not([data-dsh-icon-theme-managed]) > svg:first-child {
   display: none !important;
@@ -1412,11 +1454,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
 body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
   background: rgba(0, 0, 0, 0.55);
 }
-/* The inner scrollable groups container: centered frosted-glass panel. */
+/* The inner scrollable groups container: centered frosted-glass panel.
+   Width expanded to min(94vw, 760px) to comfortably house two-column provider + model layout
+   without horizontal truncation or horizontal scrollbars. */
 body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
-  max-width: 600px !important;
-  max-height: min(80vh, 680px) !important;
-  width: 92vw !important;
+  max-width: min(94vw, 760px) !important;
+  min-width: min(90vw, 680px) !important;
+  max-height: min(84vh, 720px) !important;
+  width: min(94vw, 740px) !important;
   margin: 0 auto !important;
   border-radius: 16px !important;
   -webkit-backdrop-filter: blur(28px) saturate(160%);
@@ -1426,6 +1471,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
     inset 0 1px 0 rgba(255, 255, 255, 0.45),
     inset 0 0 0 1px rgba(255, 255, 255, 0.18),
     0 24px 60px rgba(0, 0, 0, 0.35);
+  overflow-x: hidden !important;
   overflow-y: auto !important;
 }
 body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
@@ -1435,8 +1481,41 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollabl
     inset 0 0 0 1px rgba(255, 255, 255, 0.10),
     0 24px 60px rgba(0, 0, 0, 0.55);
 }
-/* The root pane (Model / Effort cells): centered frosted glass card. */
-body.dsh-lg-on [data-composer-card] [role="menu"] > :first-child:not(.scrollable) {
+
+/* Model selector search bar / input header: spans full 100% width across the panel */
+body.dsh-lg-on [data-composer-card] [role="menu"] input,
+body.dsh-lg-on [data-composer-card] [role="menu"] :has(> input),
+body.dsh-lg-on [data-composer-card] [role="menu"] [class*="search" i] {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
+  box-sizing: border-box !important;
+}
+body.dsh-lg-on [data-composer-card] [role="menu"] input {
+  height: 38px !important;
+  padding: 0 12px !important;
+  border-radius: 8px !important;
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+}
+body.dsh-lg-on [data-composer-card] [role="menu"] input:focus {
+  border-color: rgba(255, 255, 255, 0.40) !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.12) !important;
+  outline: none !important;
+}
+body.dsh-lg-on [data-composer-card] [role="menu"] > :first-child:has(input),
+body.dsh-lg-on [data-composer-card] [role="menu"] > :first-child[class*="search" i] {
+  width: 100% !important;
+  max-width: 100% !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  overflow: visible !important;
+}
+
+/* The legacy root pane (Model / Effort cells): only applies when it does NOT contain search / input */
+body.dsh-lg-on [data-composer-card] [role="menu"] > :first-child:not(.scrollable):not(:has(input)):not([class*="search" i]) {
   background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 82%, transparent) !important;
   -webkit-backdrop-filter: blur(28px) saturate(160%);
   backdrop-filter: blur(28px) saturate(160%);
@@ -1448,7 +1527,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] > :first-child:not(.scrollable
   width: 280px !important;
   overflow: hidden !important;
 }
-body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] > :first-child:not(.scrollable) {
+body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] > :first-child:not(.scrollable):not(:has(input)):not([class*="search" i]) {
   background: color-mix(in srgb, var(--dsh-lg-tint-dark, #2a2a2a) 86%, transparent) !important;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.25),
@@ -1481,11 +1560,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"] [role="group"] > div:first-chi
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
   font-size: 13px !important;
 }
-/* Model option items (role="menuitemradio"): glass styling with hover state. */
+/* Model option items (role="menuitemradio"): full-width single-column rows with space-between layout */
 body.dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"] {
   border-radius: 8px !important;
-  margin: 1px 6px !important;
+  margin: 1px 0 !important;
   padding: 8px 12px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
   transition: background 0.15s !important;
   background: transparent !important;
 }
@@ -1503,17 +1585,17 @@ body.dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][a
 body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][aria-checked="true"] {
   background: color-mix(in srgb, var(--dsw-alias-brand-primary) 22%, transparent) !important;
 }
-/* Two-column grid for model items in the full-screen model list. Each provider
-   group ([role="group"]) becomes a grid; the title div spans both columns. */
+/* Provider groups in model list: single-column vertical list with 100% width */
 body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable [role="group"] {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
+  display: flex !important;
+  flex-direction: column !important;
   gap: 2px !important;
-  padding: 0 10px 6px !important;
+  padding: 0 6px 6px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable [role="group"] > div:first-child {
-  grid-column: 1 / -1 !important;
-  padding: 14px 8px 4px !important;
+  padding: 12px 10px 4px !important;
 }
 /* Click-to-dismiss: cursor pointer on the backdrop, default cursor on the panel. */
 body.dsh-lg-on [data-composer-card] [role="menu"] {
