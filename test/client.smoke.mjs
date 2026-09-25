@@ -163,18 +163,20 @@ const dialogRule = styleEl.textContent.match(/\[role="dialog"\]\[aria-labelledby
 if (!dialogRule.includes('backdrop-filter')) throw new Error('settings dialog frost must ride the ::before pseudo');
 if (!dialogRule.includes('inset 0 1px 0')) throw new Error('settings dialog needs the same lens rim as the composer card');
 if (dialogRule.includes('z-index: 0')) throw new Error('settings dialog pseudo must sit behind content');
-// conversation header (对话/轨迹/session log bar): gradient blur + capsule tabs
-if (!styleEl.textContent.includes('body.dsh-lg-on header:has([role="tablist"])::before')) throw new Error('style missing conversation-header gradient blur rule');
-const headerRule = styleEl.textContent.match(/body\.dsh-lg-on header:has\(\[role="tablist"\]\)::before\s*\{[^}]*\}/)?.[0] ?? '';
-if (!headerRule.includes('backdrop-filter')) throw new Error('header blur must ride the ::before pseudo');
-if (!headerRule.includes('mask-image')) throw new Error('header blur needs a vertical mask (strong top -> none bottom)');
-// the bar must float OVER the scrolling messages (text visible through the blur)
-if (!styleEl.textContent.includes('div:has(> [data-conversation-scroll])[data-phase="active"]')) throw new Error('style missing conversation-root overlay scoping');
-const headerOverlay = styleEl.textContent.match(/body\.dsh-lg-on div:has\(> \[data-conversation-scroll\]\)\[data-phase="active"\] > \[data-slot="conversation\.session\.header"\] > header:has\(\[role="tablist"\]\)\s*\{[^}]*\}/)?.[0] ?? '';
-if (!headerOverlay.includes('position: absolute')) throw new Error('header must be lifted out of the flex row to overlay the messages (through the slot wrapper)');
-if (!headerOverlay.includes('z-index: 5')) throw new Error('header must float above the scrolling list');
-const scrollPad = styleEl.textContent.match(/body\.dsh-lg-on div:has\(> \[data-conversation-scroll\]\)\[data-phase="active"\] > \[data-conversation-scroll\]\s*\{[^}]*\}/)?.[0] ?? '';
-if (!scrollPad.includes('padding-top: 88px')) throw new Error('scroll area must reserve the header height so text starts below the bar');
+// conversation header (对话/轨迹/session log bar): capsule tabs ONLY.
+// The header surface must stay untouched: the old "gradient frosted glass"
+// ::before overlay painted a horizontal translucent band across the top of the
+// active conversation view, so it (and the absolute-positioning that existed
+// only to let messages scroll under it) must NOT come back.
+if (styleEl.textContent.includes('body.dsh-lg-on header:has([role="tablist"])::before')) throw new Error('header must not carry a gradient blur overlay (it paints a translucent band across the top)');
+if (styleEl.textContent.includes('body.dsh-lg-on header:has([role="tablist"])::after')) throw new Error('header hairline must be left to the stock stylesheet, not overridden');
+const headerBase = styleEl.textContent.match(/body\.dsh-lg-on header:has\(\[role="tablist"\]\)\s*\{[^}]*\}/)?.[0] ?? '';
+if (headerBase !== '') throw new Error('the header element itself must not be restyled (no isolation/position overrides)');
+// the stock layout keeps the header in its own flex row: nothing overlays the
+// message list, so no scroll overlay scoping or reserved padding may exist
+if (styleEl.textContent.includes('data-conversation-scroll')) throw new Error('the header must not be lifted out of the flex row to overlay the messages');
+if (styleEl.textContent.includes('conversation.session.header')) throw new Error('style must not re-anchor the session header slot');
+if (styleEl.textContent.includes('padding-top: 88px')) throw new Error('scroll area must not reserve header height for an overlay');
 if (!styleEl.textContent.includes('header:has([role="tablist"]) [role="tab"]')) throw new Error('style missing capsule tab rules');
 const tabRule = styleEl.textContent.match(/body\.dsh-lg-on header:has\(\[role="tablist"\]\) \[role="tab"\]\s*\{[^}]*\}/)?.[0] ?? '';
 if (!tabRule.includes('999px')) throw new Error('tabs must be capsule-shaped (999px radius)');
@@ -185,9 +187,8 @@ if (!styleEl.textContent.includes('[role="tab"]::after')) throw new Error('the o
 if (!styleEl.textContent.includes('data-disclosure-row] [class*="title"]')) throw new Error('style missing tool call title text-shadow rule');
 const toolTitleRule = styleEl.textContent.match(/body\.dsh-lg-on \[data-variant\] \[data-disclosure-row\] \[class\*="title"\]\s*\{[^}]*\}/)?.[0] ?? '';
 if (!toolTitleRule.includes('text-shadow')) throw new Error('tool call titles must have text-shadow for readability');
-// the header's bottom hairline must be gone (no white line between bar and messages)
-const headerLine = styleEl.textContent.match(/body\.dsh-lg-on header:has\(\[role="tablist"\]\)::after\s*\{[^}]*\}/)?.[0] ?? '';
-if (!headerLine.includes('display: none')) throw new Error('the header bottom hairline must be hidden');
+// the header's bottom hairline is intentionally left alone (stock stylesheet),
+// so no display:none override may reappear here (checked above)
 const layer = findById(body, 'dsh-liquid-glass-bg');
 if (!layer) throw new Error('no background layer');
 if (!body.classList.contains('dsh-lg-on')) throw new Error('enabled defaults must set the dsh-lg-on gate class');
