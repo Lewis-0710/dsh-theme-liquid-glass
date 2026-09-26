@@ -304,6 +304,9 @@ const SHEET = `
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  contain: strict;
   filter: blur(var(--dsh-lg-bg-blur, 0px)) brightness(var(--dsh-lg-brightness, 1)) saturate(calc(1 + var(--dsh-lg-refraction, 0)));
 }
 #${BG_LAYER_ID} > * {
@@ -406,12 +409,13 @@ body[data-ds-dark-theme].dsh-lg-on [role="dialog"][aria-labelledby]::before {
     inset 0 0 40px rgba(255, 255, 255, 0.04),
     0 0 28px rgba(255, 255, 255, 0.10);
 }
-/* User message bubbles: the same frosted glass + lens edge as the composer
-   card, so sent messages read as one material family. backdrop-filter rides
-   the ::before pseudo (isolation + z-index:-1), never the bubble itself. */
+/* User message bubbles: ultra-smooth liquid glass card styling without
+   per-bubble backdrop-filter convolution, eliminating frame-drops and GPU
+   thrashing across long chat histories while preserving crystalline glass refraction. */
 [data-time-hover-root] [class*="_bubble"] {
   position: relative;
   isolation: isolate;
+  contain: layout style;
 }
 body.dsh-lg-on [data-time-hover-root] [class*="_bubble"]::before {
   content: "";
@@ -419,24 +423,25 @@ body.dsh-lg-on [data-time-hover-root] [class*="_bubble"]::before {
   inset: 0;
   border-radius: inherit;
   z-index: -1;
-  -webkit-backdrop-filter: blur(var(--dsh-lg-blur, 24px)) saturate(150%);
-  backdrop-filter: blur(var(--dsh-lg-blur, 24px)) saturate(150%);
-  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 8%, transparent);
+  pointer-events: none;
+  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 24%, rgba(255, 255, 255, 0.18));
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.40),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
-    inset 0 0 12px rgba(255, 255, 255, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.50),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.20),
+    inset 0 0 14px rgba(255, 255, 255, 0.08),
     inset 2px 2px 6px 2px rgba(255, 255, 255, 0.12),
-    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.12);
+    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.12),
+    0 2px 10px rgba(0, 0, 0, 0.06);
 }
 body[data-ds-dark-theme].dsh-lg-on [data-time-hover-root] [class*="_bubble"]::before {
-  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 12%, transparent);
+  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #2b2b2f) 42%, rgba(0, 0, 0, 0.24));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-    inset 0 0 12px rgba(255, 255, 255, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.10),
+    inset 0 0 14px rgba(255, 255, 255, 0.05),
     inset 2px 2px 6px 2px rgba(255, 255, 255, 0.08),
-    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.08);
+    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.08),
+    0 2px 12px rgba(0, 0, 0, 0.25);
 }
 /* Conversation page header (对话 / 轨迹 / session log bar).
    NOTE: the header is deliberately left COMPLETELY unstyled as a surface.
@@ -2320,7 +2325,25 @@ function applyCore(ctx: ClientContext): void {
     };
 
     // Catch the menu being added/removed with animation frame debouncing.
-    observer = new MutationObserver(() => {
+    observer = new MutationObserver((mutations) => {
+      if (!document.body.classList.contains('dsh-lg-on')) return;
+      let mightHaveMenu = false;
+      for (const m of mutations) {
+        if (m.addedNodes.length > 0) {
+          for (let i = 0; i < m.addedNodes.length; i++) {
+            const node = m.addedNodes[i];
+            if (node.nodeType === 1) {
+              const el = node as Element;
+              if (el.getAttribute('role') === 'menu' || el.querySelector?.('[role="menu"]')) {
+                mightHaveMenu = true;
+                break;
+              }
+            }
+          }
+          if (mightHaveMenu) break;
+        }
+      }
+      if (!mightHaveMenu) return;
       if (scheduled) return;
       scheduled = true;
       scheduleTask(() => {
@@ -2378,7 +2401,24 @@ function applyCore(ctx: ClientContext): void {
     };
 
     markNav();
-    const observer = new MutationObserver(() => {
+    const observer = new MutationObserver((mutations) => {
+      let mightHaveDialog = false;
+      for (const m of mutations) {
+        if (m.addedNodes.length > 0) {
+          for (let i = 0; i < m.addedNodes.length; i++) {
+            const node = m.addedNodes[i];
+            if (node.nodeType === 1) {
+              const el = node as Element;
+              if (el.getAttribute('role') === 'dialog' || el.querySelector?.('[role="dialog"]')) {
+                mightHaveDialog = true;
+                break;
+              }
+            }
+          }
+          if (mightHaveDialog) break;
+        }
+      }
+      if (!mightHaveDialog) return;
       if (scheduled) return;
       scheduled = true;
       scheduleTask(() => {

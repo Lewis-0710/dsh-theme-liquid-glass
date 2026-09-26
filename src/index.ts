@@ -15,7 +15,7 @@
  */
 import z from '@deepseek-ai/schemastery';
 import { createReadStream } from 'node:fs';
-import { mkdir, stat, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { basename, extname, join, normalize, resolve, sep } from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { WALLPAPER_ROUTE, PROXY_ROUTE, UPLOAD_ROUTE } from './shared';
@@ -55,25 +55,27 @@ const MIME: Record<string, string> = {
 /**
  * Default demo wallpaper written on first boot when demo.html is missing, so
  * the client's out-of-the-box default (wallpaper.value = 'demo.html') always
- * resolves on a fresh install. Param-driven: reads ?sp/&bl/&cc/&bf/&op/&w.
+ * resolves on a fresh install. Ultra-smooth GPU compositor accelerated design:
+ * uses radial gradients + transform transforms without per-frame blur re-rasterization.
  */
 const DEMO_HTML = `<!doctype html><html><head><meta charset="utf-8"><style>
 html,body{margin:0;height:100%;overflow:hidden}
 body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364,#35265a);display:flex;align-items:center;justify-content:center;font-family:system-ui;color:#fff;text-align:center}
-body::before{content:"";position:fixed;inset:-10%;z-index:0;background:linear-gradient(115deg,#ff5f6d,#ffc371 25%,#36d1dc 50%,#5b86e5 75%,#a18cd1 100%);background-size:300% 300%;animation:wash var(--wash-dur,7s) ease-in-out infinite;filter:blur(70px) saturate(150%);opacity:.30;pointer-events:none}
-body.no-wash::before{animation:none}
-.blob{position:absolute;width:55vmin;height:55vmin;border-radius:50%;filter:blur(var(--blob-blur,65px)) saturate(140%);opacity:var(--blob-op,.85);animation:float var(--float-dur,5s) ease-in-out infinite,hue var(--hue-dur,4.5s) linear infinite}
-.b1{background:#7f7fd5;top:-12%;left:-6%}
-.b2{background:#86a8e7;bottom:-16%;right:-6%;animation-delay:-1.25s}
-.b3{background:#91eae4;top:38%;left:52%;animation-delay:-2.5s}
-.b4{background:#ff5f6d;top:8%;right:10%;animation-delay:-3.75s}
-.b5{background:#ffc371;bottom:6%;left:16%;animation-delay:-1.9s}
-.b6{background:#a18cd1;top:45%;left:-12%;animation-delay:-3.1s}
-@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(7vmin,-7vmin) scale(1.22)}}
-@keyframes hue{0%{filter:blur(var(--blob-blur,65px)) saturate(140%) hue-rotate(0deg)}100%{filter:blur(var(--blob-blur,65px)) saturate(140%) hue-rotate(360deg)}}
-@keyframes wash{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-h1{position:relative;z-index:1;font-weight:300;letter-spacing:.2em;font-size:3vmin}
-</style></head><body><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div><div class="blob b5"></div><div class="blob b6"></div><h1>LIQUID GLASS WALLPAPER</h1>
+body::before{content:"";position:fixed;inset:-20%;z-index:0;background:radial-gradient(circle at 50% 50%,#ff5f6d,#ffc371 25%,#36d1dc 50%,#5b86e5 75%,#a18cd1 100%);opacity:.28;pointer-events:none;will-change:transform;transform:translate3d(0,0,0);animation:wash-flow var(--wash-dur,8s) ease-in-out infinite alternate}
+body.no-wash::before{animation:none;display:none}
+.stage{position:absolute;inset:0;overflow:hidden;pointer-events:none;will-change:filter;animation:hue-cycle var(--hue-dur,18s) linear infinite}
+.blob{position:absolute;width:60vmin;height:60vmin;border-radius:50%;opacity:var(--blob-op,.85);filter:blur(var(--blob-blur,40px));will-change:transform;transform:translate3d(0,0,0);backface-visibility:hidden;animation:float var(--float-dur,5s) ease-in-out infinite alternate}
+.b1{background:radial-gradient(circle,#7f7fd5 10%,rgba(127,127,213,0.7) 45%,transparent 70%);top:-12%;left:-6%}
+.b2{background:radial-gradient(circle,#86a8e7 10%,rgba(134,168,231,0.7) 45%,transparent 70%);bottom:-16%;right:-6%;animation-delay:-1.25s}
+.b3{background:radial-gradient(circle,#91eae4 10%,rgba(145,234,228,0.7) 45%,transparent 70%);top:38%;left:52%;animation-delay:-2.5s}
+.b4{background:radial-gradient(circle,#ff5f6d 10%,rgba(255,95,109,0.7) 45%,transparent 70%);top:8%;right:10%;animation-delay:-3.75s}
+.b5{background:radial-gradient(circle,#ffc371 10%,rgba(255,195,113,0.7) 45%,transparent 70%);bottom:6%;left:16%;animation-delay:-1.9s}
+.b6{background:radial-gradient(circle,#a18cd1 10%,rgba(161,140,209,0.7) 45%,transparent 70%);top:45%;left:-12%;animation-delay:-3.1s}
+@keyframes float{0%{transform:translate3d(0,0,0) scale(1) rotate(0deg)}100%{transform:translate3d(8vmin,-8vmin,0) scale(1.22) rotate(45deg)}}
+@keyframes hue-cycle{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+@keyframes wash-flow{0%{transform:translate3d(-3%,-3%,0) scale(1) rotate(0deg)}100%{transform:translate3d(3%,3%,0) scale(1.15) rotate(15deg)}}
+h1{position:relative;z-index:1;font-weight:300;letter-spacing:.2em;font-size:3vmin;text-shadow:0 2px 12px rgba(0,0,0,0.4)}
+</style></head><body><div class="stage"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div><div class="blob b5"></div><div class="blob b6"></div></div><h1>LIQUID GLASS WALLPAPER</h1>
 <script>
 (function(){
   function num(v,d,min,max){v=parseFloat(v);return isFinite(v)?Math.min(max,Math.max(min,v)):d}
@@ -86,9 +88,9 @@ h1{position:relative;z-index:1;font-weight:300;letter-spacing:.2em;font-size:3vm
   var wash=q.get('w')!=='0';
   var root=document.documentElement;
   root.style.setProperty('--float-dur',(5/sp).toFixed(2)+'s');
-  root.style.setProperty('--wash-dur',(7/sp).toFixed(2)+'s');
+  root.style.setProperty('--wash-dur',(8/sp).toFixed(2)+'s');
   root.style.setProperty('--hue-dur',cc===0?'999999s':(18/cc).toFixed(2)+'s');
-  root.style.setProperty('--blob-blur',bf+'px');
+  root.style.setProperty('--blob-blur',Math.round(bf*0.6)+'px');
   root.style.setProperty('--blob-op',String(op));
   if(!wash)document.body.classList.add('no-wash');
   var blobs=document.querySelectorAll('.blob');
@@ -99,15 +101,17 @@ h1{position:relative;z-index:1;font-weight:300;letter-spacing:.2em;font-size:3vm
 
 /**
  * Ensure the wallpaper dir has a demo.html: writes the built-in default only
- * when the file is missing (a user's own demo.html always wins). Failures are
- * swallowed — a missing demo wallpaper must never take the plugin down.
+ * when the file is missing or contains legacy frame-dropping blur animations.
  */
 async function ensureDemoWallpaper(root: string): Promise<void> {
   try {
     await mkdir(root, { recursive: true });
     const target = join(root, 'demo.html');
     try {
-      await stat(target);
+      const existing = await readFile(target, 'utf8');
+      if (existing.includes('LIQUID GLASS WALLPAPER') && (existing.includes('keyframes hue') || !existing.includes('wash-flow'))) {
+        await writeFile(target, DEMO_HTML, 'utf8');
+      }
       return;
     } catch {
       // missing — fall through and write the default
