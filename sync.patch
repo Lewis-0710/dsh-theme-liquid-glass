@@ -49,7 +49,7 @@ index e0b8578..4ccad4d 100644
  
  **DeepSeek Harness Web UI 的纯正液态玻璃主题。**
 diff --git a/lib/client.js b/lib/client.js
-index 4632552..5f8cb72 100644
+index 4632552..57cd9a2 100644
 --- a/lib/client.js
 +++ b/lib/client.js
 @@ -255,6 +255,10 @@ function readStoredSettings() {
@@ -82,7 +82,17 @@ index 4632552..5f8cb72 100644
      set('--dsw-alias-bg-skeleton', edges(0.1));
      // Soft glass rim: low-alpha edges so the composer/dock boundary reads as a
      // subtle luminous rim (the frost strip's feathered top supplies the glow),
-@@ -381,8 +385,8 @@ body.dsh-lg-on [data-composer-card]::before {
+@@ -338,6 +342,9 @@ function readStoredSettings() {
+   background-repeat: no-repeat;
+   background-position: center;
+   background-size: cover;
++  will-change: transform;
++  transform: translate3d(0, 0, 0);
++  contain: strict;
+   filter: blur(var(--dsh-lg-bg-blur, 0px)) brightness(var(--dsh-lg-brightness, 1)) saturate(calc(1 + var(--dsh-lg-refraction, 0)));
+ }
+ #${BG_LAYER_ID} > * {
+@@ -381,8 +388,8 @@ body.dsh-lg-on [data-composer-card]::before {
    border-radius: inherit;
    z-index: 0;
    pointer-events: none;
@@ -93,21 +103,56 @@ index 4632552..5f8cb72 100644
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 10%, transparent);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.45),
-@@ -453,8 +457,8 @@ body.dsh-lg-on [data-time-hover-root] [class*="_bubble"]::before {
+@@ -440,12 +447,13 @@ body[data-ds-dark-theme].dsh-lg-on [role="dialog"][aria-labelledby]::before {
+     inset 0 0 40px rgba(255, 255, 255, 0.04),
+     0 0 28px rgba(255, 255, 255, 0.10);
+ }
+-/* User message bubbles: the same frosted glass + lens edge as the composer
+-   card, so sent messages read as one material family. backdrop-filter rides
+-   the ::before pseudo (isolation + z-index:-1), never the bubble itself. */
++/* User message bubbles: ultra-smooth liquid glass card styling without
++   per-bubble backdrop-filter convolution, eliminating frame-drops and GPU
++   thrashing across long chat histories while preserving crystalline glass refraction. */
+ [data-time-hover-root] [class*="_bubble"] {
+   position: relative;
+   isolation: isolate;
++  contain: layout style;
+ }
+ body.dsh-lg-on [data-time-hover-root] [class*="_bubble"]::before {
+   content: "";
+@@ -453,72 +461,39 @@ body.dsh-lg-on [data-time-hover-root] [class*="_bubble"]::before {
    inset: 0;
    border-radius: inherit;
    z-index: -1;
 -  -webkit-backdrop-filter: blur(var(--dsh-lg-blur, 24px)) saturate(150%) url(#dsh-lg-edge-refraction);
 -  backdrop-filter: blur(var(--dsh-lg-blur, 24px)) saturate(150%) url(#dsh-lg-edge-refraction);
-+  -webkit-backdrop-filter: blur(var(--dsh-lg-blur, 24px)) saturate(150%);
-+  backdrop-filter: blur(var(--dsh-lg-blur, 24px)) saturate(150%);
-   background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 8%, transparent);
+-  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 8%, transparent);
++  pointer-events: none;
++  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 24%, rgba(255, 255, 255, 0.18));
    box-shadow:
-     inset 0 1px 0 rgba(255, 255, 255, 0.40),
-@@ -472,53 +476,19 @@ body[data-ds-dark-theme].dsh-lg-on [data-time-hover-root] [class*="_bubble"]::be
-     inset 2px 2px 6px 2px rgba(255, 255, 255, 0.08),
-     inset -2px -2px 4px -1px rgba(255, 255, 255, 0.08);
+-    inset 0 1px 0 rgba(255, 255, 255, 0.40),
+-    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+-    inset 0 0 12px rgba(255, 255, 255, 0.07),
++    inset 0 1px 0 rgba(255, 255, 255, 0.50),
++    inset 0 0 0 1px rgba(255, 255, 255, 0.20),
++    inset 0 0 14px rgba(255, 255, 255, 0.08),
+     inset 2px 2px 6px 2px rgba(255, 255, 255, 0.12),
+-    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.12);
++    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.12),
++    0 2px 10px rgba(0, 0, 0, 0.06);
  }
+ body[data-ds-dark-theme].dsh-lg-on [data-time-hover-root] [class*="_bubble"]::before {
+-  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 12%, transparent);
++  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #2b2b2f) 42%, rgba(0, 0, 0, 0.24));
+   box-shadow:
+     inset 0 1px 0 rgba(255, 255, 255, 0.25),
+-    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+-    inset 0 0 12px rgba(255, 255, 255, 0.05),
++    inset 0 0 0 1px rgba(255, 255, 255, 0.10),
++    inset 0 0 14px rgba(255, 255, 255, 0.05),
+     inset 2px 2px 6px 2px rgba(255, 255, 255, 0.08),
+-    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.08);
+-}
 -/* Conversation page header (对话 / 轨迹 / session log bar): gradient frosted
 -   glass — strong backdrop blur at the TOP fading to no blur at the BOTTOM,
 -   via a vertical mask on the ::before pseudo (z-index:-1, isolation so the
@@ -155,6 +200,9 @@ index 4632552..5f8cb72 100644
 -  box-sizing: border-box;
 -  padding-top: 88px;
 -}
++    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.08),
++    0 2px 12px rgba(0, 0, 0, 0.25);
++}
 +/* Conversation page header (对话 / 轨迹 / session log bar).
 +   NOTE: the header is deliberately left COMPLETELY unstyled as a surface.
 +   It used to carry a "gradient frosted glass" treatment — a full-bleed
@@ -171,7 +219,7 @@ index 4632552..5f8cb72 100644
  /* View tabs: floating glass capsules with a highlight edge (the old underline
     indicator is replaced by the capsule surface). backdrop-filter rides the
     ::before pseudo, never the button itself. */
-@@ -536,8 +506,8 @@ body.dsh-lg-on header:has([role="tablist"]) [role="tab"]::before {
+@@ -536,8 +511,8 @@ body.dsh-lg-on header:has([role="tablist"]) [role="tab"]::before {
    inset: 0;
    border-radius: inherit;
    z-index: -1;
@@ -182,7 +230,7 @@ index 4632552..5f8cb72 100644
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 8%, transparent);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.40),
-@@ -583,27 +553,98 @@ body[data-ds-dark-theme].dsh-lg-on header:has([role="tablist"]) [role="tab"][ari
+@@ -583,27 +558,98 @@ body[data-ds-dark-theme].dsh-lg-on header:has([role="tablist"]) [role="tab"][ari
  body.dsh-lg-on header:has([role="tablist"]) [role="tab"]::after {
    display: none;
  }
@@ -287,7 +335,7 @@ index 4632552..5f8cb72 100644
 +body.dsh-lg-on button[role="switch"]:is([data-state="checked"], [aria-checked="true"]):hover:not(:disabled),
 +body.dsh-lg-on [class*="_switch"][role="switch"]:is([data-state="checked"], [aria-checked="true"]):hover:not(:disabled) {
 +  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.70) !important;
- }
++}
 +
 +/* ON (Checked) thumb: solid pure white thumb */
 +body.dsh-lg-on button[role="switch"]:is([data-state="checked"], [aria-checked="true"]) [class*="thumb" i],
@@ -296,12 +344,12 @@ index 4632552..5f8cb72 100644
 +  background: #ffffff !important;
 +  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(255, 255, 255, 0.40) !important;
 +  opacity: 1 !important;
-+}
+ }
 +
  /* Tool call titles (Read, Think, Edit, Bash, etc.): text-shadow for
     readability on glass backgrounds, plus optional custom color. */
  body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="title"] {
-@@ -615,62 +656,200 @@ body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="summary"] {
+@@ -615,62 +661,200 @@ body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="summary"] {
    color: var(--dsh-lg-tool-text-color, var(--dsw-alias-label-secondary));
    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
  }
@@ -456,7 +504,7 @@ index 4632552..5f8cb72 100644
 +  opacity: 1 !important;
 +  visibility: visible !important;
 +  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45)) !important;
-+}
+ }
 +
 +/* 实心图标纯白填充 (指令 +, 附件 📎, 分支 图标) */
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg,
@@ -479,7 +527,7 @@ index 4632552..5f8cb72 100644
 +  fill: #ffffff !important;
 +  stroke: none !important;
 +  opacity: 1 !important;
- }
++}
 +
 +/* 描边图标纯白描边 (通知开关铃铛 🔔 图标) */
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg,
@@ -546,7 +594,7 @@ index 4632552..5f8cb72 100644
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.40),
      inset 0 0 0 1px rgba(255, 255, 255, 0.14),
-@@ -701,30 +880,31 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[class*="_primary"
+@@ -701,30 +885,31 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[class*="_primary"
  }
  /* Queue dock: same frosted glass + a wider lens rim. */
  body.dsh-lg-on [data-queue-dock] > div {
@@ -587,7 +635,7 @@ index 4632552..5f8cb72 100644
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 8%, transparent);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.30),
-@@ -733,7 +913,8 @@ body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button:not([aria-label
+@@ -733,7 +918,8 @@ body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button:not([aria-label
      inset 2px 2px 6px 2px rgba(255, 255, 255, 0.10),
      inset -2px -2px 4px -1px rgba(255, 255, 255, 0.10);
  }
@@ -597,7 +645,7 @@ index 4632552..5f8cb72 100644
    background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 12%, transparent);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.18),
-@@ -742,18 +923,523 @@ body[data-ds-dark-theme].dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) bu
+@@ -742,18 +928,523 @@ body[data-ds-dark-theme].dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) bu
      inset 2px 2px 6px 2px rgba(255, 255, 255, 0.06),
      inset -2px -2px 4px -1px rgba(255, 255, 255, 0.06);
  }
@@ -1125,7 +1173,7 @@ index 4632552..5f8cb72 100644
    display: none !important;
  }
  /* Sidebar logo / branding: exclude from the liquid glass effect — the square
-@@ -806,11 +1492,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
+@@ -806,11 +1497,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
  body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
    background: rgba(0, 0, 0, 0.55);
  }
@@ -1144,7 +1192,7 @@ index 4632552..5f8cb72 100644
    margin: 0 auto !important;
    border-radius: 16px !important;
    -webkit-backdrop-filter: blur(28px) saturate(160%);
-@@ -820,6 +1509,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
+@@ -820,6 +1514,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
      inset 0 1px 0 rgba(255, 255, 255, 0.45),
      inset 0 0 0 1px rgba(255, 255, 255, 0.18),
      0 24px 60px rgba(0, 0, 0, 0.35);
@@ -1152,7 +1200,7 @@ index 4632552..5f8cb72 100644
    overflow-y: auto !important;
  }
  body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
-@@ -829,8 +1519,41 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollabl
+@@ -829,8 +1524,41 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollabl
      inset 0 0 0 1px rgba(255, 255, 255, 0.10),
      0 24px 60px rgba(0, 0, 0, 0.55);
  }
@@ -1196,7 +1244,7 @@ index 4632552..5f8cb72 100644
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 82%, transparent) !important;
    -webkit-backdrop-filter: blur(28px) saturate(160%);
    backdrop-filter: blur(28px) saturate(160%);
-@@ -842,7 +1565,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] > :first-child:not(.scrollable
+@@ -842,7 +1570,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] > :first-child:not(.scrollable
    width: 280px !important;
    overflow: hidden !important;
  }
@@ -1205,7 +1253,7 @@ index 4632552..5f8cb72 100644
    background: color-mix(in srgb, var(--dsh-lg-tint-dark, #2a2a2a) 86%, transparent) !important;
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.25),
-@@ -875,11 +1598,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"] [role="group"] > div:first-chi
+@@ -875,11 +1603,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"] [role="group"] > div:first-chi
    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
    font-size: 13px !important;
  }
@@ -1222,7 +1270,7 @@ index 4632552..5f8cb72 100644
    transition: background 0.15s !important;
    background: transparent !important;
  }
-@@ -897,17 +1623,17 @@ body.dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][a
+@@ -897,17 +1628,17 @@ body.dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][a
  body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][aria-checked="true"] {
    background: color-mix(in srgb, var(--dsw-alias-brand-primary) 22%, transparent) !important;
  }
@@ -1247,7 +1295,7 @@ index 4632552..5f8cb72 100644
  }
  /* Click-to-dismiss: cursor pointer on the backdrop, default cursor on the panel. */
  body.dsh-lg-on [data-composer-card] [role="menu"] {
-@@ -919,8 +1645,8 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
+@@ -919,8 +1650,8 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
  /* Access-mode dropdown glass (see EDGE note below). */
  body.dsh-lg-on [data-composer-card] [role="menu"]:not(:has(.scrollable)) {
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 74%, transparent) !important;
@@ -1258,7 +1306,7 @@ index 4632552..5f8cb72 100644
    border: 1px solid rgba(255, 255, 255, 0.18);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.45),
-@@ -1935,6 +2661,13 @@ function applyCore(ctx) {
+@@ -1935,6 +2666,13 @@ function applyCore(ctx) {
      // through the theme service itself).
      const offThemeChange = client.on?.('theme/change', ()=>safe('theme-change scrim', ()=>applier?.refreshScrim()));
      client.effect(()=>offThemeChange, 'liquid-glass: theme-change scrim');
@@ -1272,7 +1320,7 @@ index 4632552..5f8cb72 100644
      // Model menu behaviour: clicking the composer model selector opens a two-pane
      // menu (a "root" pane all-in-one list, then a model list). Users asked to skip
      // the intermediate root pane and jump straight to the model list, render it in
-@@ -1947,6 +2680,7 @@ function applyCore(ctx) {
+@@ -1947,6 +2685,7 @@ function applyCore(ctx) {
      // being enabled and retracted on dispose.
      client.effect(()=>{
          let observer;
@@ -1280,7 +1328,7 @@ index 4632552..5f8cb72 100644
          const navigate = ()=>{
              if (!document.body.classList.contains('dsh-lg-on')) return;
              const menu = document.querySelector('[data-composer-card] [role="menu"]');
-@@ -1977,7 +2711,7 @@ function applyCore(ctx) {
+@@ -1977,7 +2716,7 @@ function applyCore(ctx) {
                  return;
              }
              // Defer so the menu has settled into the DOM before we click it.
@@ -1289,15 +1337,34 @@ index 4632552..5f8cb72 100644
                  try {
                      modelCell.click();
                  } catch  {
-@@ -1986,10 +2720,14 @@ function applyCore(ctx) {
+@@ -1986,10 +2725,32 @@ function applyCore(ctx) {
                  }
              });
          };
 -        // Catch the menu being added/removed, and re-run once after React settles.
-+        // Catch the menu being added/removed with animation frame debouncing.
-         observer = new MutationObserver(()=>{
+-        observer = new MutationObserver(()=>{
 -            navigate();
 -            requestAnimationFrame(()=>navigate());
++        // Catch the menu being added/removed with animation frame debouncing.
++        observer = new MutationObserver((mutations)=>{
++            if (!document.body.classList.contains('dsh-lg-on')) return;
++            let mightHaveMenu = false;
++            for (const m of mutations){
++                if (m.addedNodes.length > 0) {
++                    for(let i = 0; i < m.addedNodes.length; i++){
++                        const node = m.addedNodes[i];
++                        if (node.nodeType === 1) {
++                            const el = node;
++                            if (el.getAttribute('role') === 'menu' || el.querySelector?.('[role="menu"]')) {
++                                mightHaveMenu = true;
++                                break;
++                            }
++                        }
++                    }
++                    if (mightHaveMenu) break;
++                }
++            }
++            if (!mightHaveMenu) return;
 +            if (scheduled) return;
 +            scheduled = true;
 +            scheduleTask(()=>{
@@ -1307,7 +1374,7 @@ index 4632552..5f8cb72 100644
          });
          observer.observe(document.body, {
              childList: true,
-@@ -2022,33 +2760,36 @@ function applyCore(ctx) {
+@@ -2022,33 +2783,53 @@ function applyCore(ctx) {
      // Water-drop settings icon. The settings shell picks a nav glyph per section
      // id via a HARD-CODED map (see `navIcon` in dsh-client-ui-settings-general):
      // ids it doesn't know — including ours, `liquid-glass` — all fall back to the
@@ -1352,10 +1419,28 @@ index 4632552..5f8cb72 100644
 +            cell.setAttribute('data-dsh-liquid-glass-settings-nav', '');
          };
 -        applyIcon();
-+        markNav();
-         const observer = new MutationObserver(()=>{
+-        const observer = new MutationObserver(()=>{
 -            applyIcon();
 -            requestAnimationFrame(()=>applyIcon());
++        markNav();
++        const observer = new MutationObserver((mutations)=>{
++            let mightHaveDialog = false;
++            for (const m of mutations){
++                if (m.addedNodes.length > 0) {
++                    for(let i = 0; i < m.addedNodes.length; i++){
++                        const node = m.addedNodes[i];
++                        if (node.nodeType === 1) {
++                            const el = node;
++                            if (el.getAttribute('role') === 'dialog' || el.querySelector?.('[role="dialog"]')) {
++                                mightHaveDialog = true;
++                                break;
++                            }
++                        }
++                    }
++                    if (mightHaveDialog) break;
++                }
++            }
++            if (!mightHaveDialog) return;
 +            if (scheduled) return;
 +            scheduled = true;
 +            scheduleTask(()=>{
@@ -1365,6 +1450,95 @@ index 4632552..5f8cb72 100644
          });
          observer.observe(document.body, {
              childList: true,
+diff --git a/lib/index.js b/lib/index.js
+index 8ee6b8d..970a908 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -14,7 +14,7 @@
+  * both chose localStorage.
+  */ import z from '@deepseek-ai/schemastery';
+ import { createReadStream } from 'node:fs';
+-import { mkdir, stat, writeFile } from 'node:fs/promises';
++import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+ import { basename, extname, join, normalize, resolve, sep } from 'node:path';
+ import { WALLPAPER_ROUTE, PROXY_ROUTE, UPLOAD_ROUTE } from './shared.js';
+ /** Loader-facing config for the host row (see the profile patch file). */ export const Config = z.object({
+@@ -48,24 +48,26 @@ const MIME = {
+ /**
+  * Default demo wallpaper written on first boot when demo.html is missing, so
+  * the client's out-of-the-box default (wallpaper.value = 'demo.html') always
+- * resolves on a fresh install. Param-driven: reads ?sp/&bl/&cc/&bf/&op/&w.
++ * resolves on a fresh install. Ultra-smooth GPU compositor accelerated design:
++ * uses radial gradients + transform transforms without per-frame blur re-rasterization.
+  */ const DEMO_HTML = `<!doctype html><html><head><meta charset="utf-8"><style>
+ html,body{margin:0;height:100%;overflow:hidden}
+ body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364,#35265a);display:flex;align-items:center;justify-content:center;font-family:system-ui;color:#fff;text-align:center}
+-body::before{content:"";position:fixed;inset:-10%;z-index:0;background:linear-gradient(115deg,#ff5f6d,#ffc371 25%,#36d1dc 50%,#5b86e5 75%,#a18cd1 100%);background-size:300% 300%;animation:wash var(--wash-dur,7s) ease-in-out infinite;filter:blur(70px) saturate(150%);opacity:.30;pointer-events:none}
+-body.no-wash::before{animation:none}
+-.blob{position:absolute;width:55vmin;height:55vmin;border-radius:50%;filter:blur(var(--blob-blur,65px)) saturate(140%);opacity:var(--blob-op,.85);animation:float var(--float-dur,5s) ease-in-out infinite,hue var(--hue-dur,4.5s) linear infinite}
+-.b1{background:#7f7fd5;top:-12%;left:-6%}
+-.b2{background:#86a8e7;bottom:-16%;right:-6%;animation-delay:-1.25s}
+-.b3{background:#91eae4;top:38%;left:52%;animation-delay:-2.5s}
+-.b4{background:#ff5f6d;top:8%;right:10%;animation-delay:-3.75s}
+-.b5{background:#ffc371;bottom:6%;left:16%;animation-delay:-1.9s}
+-.b6{background:#a18cd1;top:45%;left:-12%;animation-delay:-3.1s}
+-@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(7vmin,-7vmin) scale(1.22)}}
+-@keyframes hue{0%{filter:blur(var(--blob-blur,65px)) saturate(140%) hue-rotate(0deg)}100%{filter:blur(var(--blob-blur,65px)) saturate(140%) hue-rotate(360deg)}}
+-@keyframes wash{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+-h1{position:relative;z-index:1;font-weight:300;letter-spacing:.2em;font-size:3vmin}
+-</style></head><body><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div><div class="blob b5"></div><div class="blob b6"></div><h1>LIQUID GLASS WALLPAPER</h1>
++body::before{content:"";position:fixed;inset:-20%;z-index:0;background:radial-gradient(circle at 50% 50%,#ff5f6d,#ffc371 25%,#36d1dc 50%,#5b86e5 75%,#a18cd1 100%);opacity:.28;pointer-events:none;will-change:transform;transform:translate3d(0,0,0);animation:wash-flow var(--wash-dur,8s) ease-in-out infinite alternate}
++body.no-wash::before{animation:none;display:none}
++.stage{position:absolute;inset:0;overflow:hidden;pointer-events:none;will-change:filter;animation:hue-cycle var(--hue-dur,18s) linear infinite}
++.blob{position:absolute;width:60vmin;height:60vmin;border-radius:50%;opacity:var(--blob-op,.85);filter:blur(var(--blob-blur,40px));will-change:transform;transform:translate3d(0,0,0);backface-visibility:hidden;animation:float var(--float-dur,5s) ease-in-out infinite alternate}
++.b1{background:radial-gradient(circle,#7f7fd5 10%,rgba(127,127,213,0.7) 45%,transparent 70%);top:-12%;left:-6%}
++.b2{background:radial-gradient(circle,#86a8e7 10%,rgba(134,168,231,0.7) 45%,transparent 70%);bottom:-16%;right:-6%;animation-delay:-1.25s}
++.b3{background:radial-gradient(circle,#91eae4 10%,rgba(145,234,228,0.7) 45%,transparent 70%);top:38%;left:52%;animation-delay:-2.5s}
++.b4{background:radial-gradient(circle,#ff5f6d 10%,rgba(255,95,109,0.7) 45%,transparent 70%);top:8%;right:10%;animation-delay:-3.75s}
++.b5{background:radial-gradient(circle,#ffc371 10%,rgba(255,195,113,0.7) 45%,transparent 70%);bottom:6%;left:16%;animation-delay:-1.9s}
++.b6{background:radial-gradient(circle,#a18cd1 10%,rgba(161,140,209,0.7) 45%,transparent 70%);top:45%;left:-12%;animation-delay:-3.1s}
++@keyframes float{0%{transform:translate3d(0,0,0) scale(1) rotate(0deg)}100%{transform:translate3d(8vmin,-8vmin,0) scale(1.22) rotate(45deg)}}
++@keyframes hue-cycle{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
++@keyframes wash-flow{0%{transform:translate3d(-3%,-3%,0) scale(1) rotate(0deg)}100%{transform:translate3d(3%,3%,0) scale(1.15) rotate(15deg)}}
++h1{position:relative;z-index:1;font-weight:300;letter-spacing:.2em;font-size:3vmin;text-shadow:0 2px 12px rgba(0,0,0,0.4)}
++</style></head><body><div class="stage"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div><div class="blob b5"></div><div class="blob b6"></div></div><h1>LIQUID GLASS WALLPAPER</h1>
+ <script>
+ (function(){
+   function num(v,d,min,max){v=parseFloat(v);return isFinite(v)?Math.min(max,Math.max(min,v)):d}
+@@ -78,9 +80,9 @@ h1{position:relative;z-index:1;font-weight:300;letter-spacing:.2em;font-size:3vm
+   var wash=q.get('w')!=='0';
+   var root=document.documentElement;
+   root.style.setProperty('--float-dur',(5/sp).toFixed(2)+'s');
+-  root.style.setProperty('--wash-dur',(7/sp).toFixed(2)+'s');
++  root.style.setProperty('--wash-dur',(8/sp).toFixed(2)+'s');
+   root.style.setProperty('--hue-dur',cc===0?'999999s':(18/cc).toFixed(2)+'s');
+-  root.style.setProperty('--blob-blur',bf+'px');
++  root.style.setProperty('--blob-blur',Math.round(bf*0.6)+'px');
+   root.style.setProperty('--blob-op',String(op));
+   if(!wash)document.body.classList.add('no-wash');
+   var blobs=document.querySelectorAll('.blob');
+@@ -90,8 +92,7 @@ h1{position:relative;z-index:1;font-weight:300;letter-spacing:.2em;font-size:3vm
+ </body></html>`;
+ /**
+  * Ensure the wallpaper dir has a demo.html: writes the built-in default only
+- * when the file is missing (a user's own demo.html always wins). Failures are
+- * swallowed — a missing demo wallpaper must never take the plugin down.
++ * when the file is missing or contains legacy frame-dropping blur animations.
+  */ async function ensureDemoWallpaper(root) {
+     try {
+         await mkdir(root, {
+@@ -99,7 +100,10 @@ h1{position:relative;z-index:1;font-weight:300;letter-spacing:.2em;font-size:3vm
+         });
+         const target = join(root, 'demo.html');
+         try {
+-            await stat(target);
++            const existing = await readFile(target, 'utf8');
++            if (existing.includes('LIQUID GLASS WALLPAPER') && (existing.includes('keyframes hue') || !existing.includes('wash-flow'))) {
++                await writeFile(target, DEMO_HTML, 'utf8');
++            }
+             return;
+         } catch  {
+         // missing — fall through and write the default
 diff --git a/package-lock.json b/package-lock.json
 index 5ffb253..60191ed 100644
 --- a/package-lock.json
@@ -1398,7 +1572,7 @@ index 5ffb253..60191ed 100644
              "peerDependenciesMeta": {
                  "@deepseek-ai/cordis-plugin-include": {
 diff --git a/src/client/index.tsx b/src/client/index.tsx
-index 9153466..fb80704 100644
+index 9153466..048256f 100644
 --- a/src/client/index.tsx
 +++ b/src/client/index.tsx
 @@ -218,6 +218,10 @@ function buildTokens(s: LiquidGlassSettings): ThemeTokenOverrides {
@@ -1431,7 +1605,17 @@ index 9153466..fb80704 100644
    set('--dsw-alias-bg-skeleton', edges(0.1));
    // Soft glass rim: low-alpha edges so the composer/dock boundary reads as a
    // subtle luminous rim (the frost strip's feathered top supplies the glow),
-@@ -343,8 +347,8 @@ body.dsh-lg-on [data-composer-card]::before {
+@@ -300,6 +304,9 @@ const SHEET = `
+   background-repeat: no-repeat;
+   background-position: center;
+   background-size: cover;
++  will-change: transform;
++  transform: translate3d(0, 0, 0);
++  contain: strict;
+   filter: blur(var(--dsh-lg-bg-blur, 0px)) brightness(var(--dsh-lg-brightness, 1)) saturate(calc(1 + var(--dsh-lg-refraction, 0)));
+ }
+ #${BG_LAYER_ID} > * {
+@@ -343,8 +350,8 @@ body.dsh-lg-on [data-composer-card]::before {
    border-radius: inherit;
    z-index: 0;
    pointer-events: none;
@@ -1442,21 +1626,56 @@ index 9153466..fb80704 100644
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 10%, transparent);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.45),
-@@ -415,8 +419,8 @@ body.dsh-lg-on [data-time-hover-root] [class*="_bubble"]::before {
+@@ -402,12 +409,13 @@ body[data-ds-dark-theme].dsh-lg-on [role="dialog"][aria-labelledby]::before {
+     inset 0 0 40px rgba(255, 255, 255, 0.04),
+     0 0 28px rgba(255, 255, 255, 0.10);
+ }
+-/* User message bubbles: the same frosted glass + lens edge as the composer
+-   card, so sent messages read as one material family. backdrop-filter rides
+-   the ::before pseudo (isolation + z-index:-1), never the bubble itself. */
++/* User message bubbles: ultra-smooth liquid glass card styling without
++   per-bubble backdrop-filter convolution, eliminating frame-drops and GPU
++   thrashing across long chat histories while preserving crystalline glass refraction. */
+ [data-time-hover-root] [class*="_bubble"] {
+   position: relative;
+   isolation: isolate;
++  contain: layout style;
+ }
+ body.dsh-lg-on [data-time-hover-root] [class*="_bubble"]::before {
+   content: "";
+@@ -415,72 +423,39 @@ body.dsh-lg-on [data-time-hover-root] [class*="_bubble"]::before {
    inset: 0;
    border-radius: inherit;
    z-index: -1;
 -  -webkit-backdrop-filter: blur(var(--dsh-lg-blur, 24px)) saturate(150%) url(#dsh-lg-edge-refraction);
 -  backdrop-filter: blur(var(--dsh-lg-blur, 24px)) saturate(150%) url(#dsh-lg-edge-refraction);
-+  -webkit-backdrop-filter: blur(var(--dsh-lg-blur, 24px)) saturate(150%);
-+  backdrop-filter: blur(var(--dsh-lg-blur, 24px)) saturate(150%);
-   background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 8%, transparent);
+-  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 8%, transparent);
++  pointer-events: none;
++  background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 24%, rgba(255, 255, 255, 0.18));
    box-shadow:
-     inset 0 1px 0 rgba(255, 255, 255, 0.40),
-@@ -434,53 +438,19 @@ body[data-ds-dark-theme].dsh-lg-on [data-time-hover-root] [class*="_bubble"]::be
-     inset 2px 2px 6px 2px rgba(255, 255, 255, 0.08),
-     inset -2px -2px 4px -1px rgba(255, 255, 255, 0.08);
+-    inset 0 1px 0 rgba(255, 255, 255, 0.40),
+-    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+-    inset 0 0 12px rgba(255, 255, 255, 0.07),
++    inset 0 1px 0 rgba(255, 255, 255, 0.50),
++    inset 0 0 0 1px rgba(255, 255, 255, 0.20),
++    inset 0 0 14px rgba(255, 255, 255, 0.08),
+     inset 2px 2px 6px 2px rgba(255, 255, 255, 0.12),
+-    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.12);
++    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.12),
++    0 2px 10px rgba(0, 0, 0, 0.06);
  }
+ body[data-ds-dark-theme].dsh-lg-on [data-time-hover-root] [class*="_bubble"]::before {
+-  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 12%, transparent);
++  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #2b2b2f) 42%, rgba(0, 0, 0, 0.24));
+   box-shadow:
+     inset 0 1px 0 rgba(255, 255, 255, 0.25),
+-    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+-    inset 0 0 12px rgba(255, 255, 255, 0.05),
++    inset 0 0 0 1px rgba(255, 255, 255, 0.10),
++    inset 0 0 14px rgba(255, 255, 255, 0.05),
+     inset 2px 2px 6px 2px rgba(255, 255, 255, 0.08),
+-    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.08);
+-}
 -/* Conversation page header (对话 / 轨迹 / session log bar): gradient frosted
 -   glass — strong backdrop blur at the TOP fading to no blur at the BOTTOM,
 -   via a vertical mask on the ::before pseudo (z-index:-1, isolation so the
@@ -1504,6 +1723,9 @@ index 9153466..fb80704 100644
 -  box-sizing: border-box;
 -  padding-top: 88px;
 -}
++    inset -2px -2px 4px -1px rgba(255, 255, 255, 0.08),
++    0 2px 12px rgba(0, 0, 0, 0.25);
++}
 +/* Conversation page header (对话 / 轨迹 / session log bar).
 +   NOTE: the header is deliberately left COMPLETELY unstyled as a surface.
 +   It used to carry a "gradient frosted glass" treatment — a full-bleed
@@ -1520,7 +1742,7 @@ index 9153466..fb80704 100644
  /* View tabs: floating glass capsules with a highlight edge (the old underline
     indicator is replaced by the capsule surface). backdrop-filter rides the
     ::before pseudo, never the button itself. */
-@@ -498,8 +468,8 @@ body.dsh-lg-on header:has([role="tablist"]) [role="tab"]::before {
+@@ -498,8 +473,8 @@ body.dsh-lg-on header:has([role="tablist"]) [role="tab"]::before {
    inset: 0;
    border-radius: inherit;
    z-index: -1;
@@ -1531,7 +1753,7 @@ index 9153466..fb80704 100644
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 8%, transparent);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.40),
-@@ -545,27 +515,98 @@ body[data-ds-dark-theme].dsh-lg-on header:has([role="tablist"]) [role="tab"][ari
+@@ -545,27 +520,98 @@ body[data-ds-dark-theme].dsh-lg-on header:has([role="tablist"]) [role="tab"][ari
  body.dsh-lg-on header:has([role="tablist"]) [role="tab"]::after {
    display: none;
  }
@@ -1650,7 +1872,7 @@ index 9153466..fb80704 100644
  /* Tool call titles (Read, Think, Edit, Bash, etc.): text-shadow for
     readability on glass backgrounds, plus optional custom color. */
  body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="title"] {
-@@ -577,62 +618,200 @@ body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="summary"] {
+@@ -577,62 +623,200 @@ body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="summary"] {
    color: var(--dsh-lg-tool-text-color, var(--dsw-alias-label-secondary));
    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
  }
@@ -1896,7 +2118,7 @@ index 9153466..fb80704 100644
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.40),
      inset 0 0 0 1px rgba(255, 255, 255, 0.14),
-@@ -663,30 +842,31 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[class*="_primary"
+@@ -663,30 +847,31 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[class*="_primary"
  }
  /* Queue dock: same frosted glass + a wider lens rim. */
  body.dsh-lg-on [data-queue-dock] > div {
@@ -1937,7 +2159,7 @@ index 9153466..fb80704 100644
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 8%, transparent);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.30),
-@@ -695,7 +875,8 @@ body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button:not([aria-label
+@@ -695,7 +880,8 @@ body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button:not([aria-label
      inset 2px 2px 6px 2px rgba(255, 255, 255, 0.10),
      inset -2px -2px 4px -1px rgba(255, 255, 255, 0.10);
  }
@@ -1947,7 +2169,7 @@ index 9153466..fb80704 100644
    background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 12%, transparent);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.18),
-@@ -704,18 +885,523 @@ body[data-ds-dark-theme].dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) bu
+@@ -704,18 +890,523 @@ body[data-ds-dark-theme].dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) bu
      inset 2px 2px 6px 2px rgba(255, 255, 255, 0.06),
      inset -2px -2px 4px -1px rgba(255, 255, 255, 0.06);
  }
@@ -2475,7 +2697,7 @@ index 9153466..fb80704 100644
    display: none !important;
  }
  /* Sidebar logo / branding: exclude from the liquid glass effect — the square
-@@ -768,11 +1454,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
+@@ -768,11 +1459,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
  body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
    background: rgba(0, 0, 0, 0.55);
  }
@@ -2494,7 +2716,7 @@ index 9153466..fb80704 100644
    margin: 0 auto !important;
    border-radius: 16px !important;
    -webkit-backdrop-filter: blur(28px) saturate(160%);
-@@ -782,6 +1471,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
+@@ -782,6 +1476,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
      inset 0 1px 0 rgba(255, 255, 255, 0.45),
      inset 0 0 0 1px rgba(255, 255, 255, 0.18),
      0 24px 60px rgba(0, 0, 0, 0.35);
@@ -2502,7 +2724,7 @@ index 9153466..fb80704 100644
    overflow-y: auto !important;
  }
  body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
-@@ -791,8 +1481,41 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollabl
+@@ -791,8 +1486,41 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollabl
      inset 0 0 0 1px rgba(255, 255, 255, 0.10),
      0 24px 60px rgba(0, 0, 0, 0.55);
  }
@@ -2546,7 +2768,7 @@ index 9153466..fb80704 100644
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 82%, transparent) !important;
    -webkit-backdrop-filter: blur(28px) saturate(160%);
    backdrop-filter: blur(28px) saturate(160%);
-@@ -804,7 +1527,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] > :first-child:not(.scrollable
+@@ -804,7 +1532,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] > :first-child:not(.scrollable
    width: 280px !important;
    overflow: hidden !important;
  }
@@ -2555,7 +2777,7 @@ index 9153466..fb80704 100644
    background: color-mix(in srgb, var(--dsh-lg-tint-dark, #2a2a2a) 86%, transparent) !important;
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.25),
-@@ -837,11 +1560,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"] [role="group"] > div:first-chi
+@@ -837,11 +1565,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"] [role="group"] > div:first-chi
    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
    font-size: 13px !important;
  }
@@ -2572,7 +2794,7 @@ index 9153466..fb80704 100644
    transition: background 0.15s !important;
    background: transparent !important;
  }
-@@ -859,17 +1585,17 @@ body.dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][a
+@@ -859,17 +1590,17 @@ body.dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][a
  body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][aria-checked="true"] {
    background: color-mix(in srgb, var(--dsw-alias-brand-primary) 22%, transparent) !important;
  }
@@ -2597,7 +2819,7 @@ index 9153466..fb80704 100644
  }
  /* Click-to-dismiss: cursor pointer on the backdrop, default cursor on the panel. */
  body.dsh-lg-on [data-composer-card] [role="menu"] {
-@@ -881,8 +1607,8 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
+@@ -881,8 +1612,8 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
  /* Access-mode dropdown glass (see EDGE note below). */
  body.dsh-lg-on [data-composer-card] [role="menu"]:not(:has(.scrollable)) {
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 74%, transparent) !important;
@@ -2608,7 +2830,7 @@ index 9153466..fb80704 100644
    border: 1px solid rgba(255, 255, 255, 0.18);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.45),
-@@ -1529,6 +2255,14 @@ function applyCore(ctx: ClientContext): void {
+@@ -1529,6 +2260,14 @@ function applyCore(ctx: ClientContext): void {
    const offThemeChange = client.on?.('theme/change', () => safe('theme-change scrim', () => applier?.refreshScrim()));
    client.effect(() => offThemeChange, 'liquid-glass: theme-change scrim');
  
@@ -2623,7 +2845,7 @@ index 9153466..fb80704 100644
    // Model menu behaviour: clicking the composer model selector opens a two-pane
    // menu (a "root" pane all-in-one list, then a model list). Users asked to skip
    // the intermediate root pane and jump straight to the model list, render it in
-@@ -1541,6 +2275,7 @@ function applyCore(ctx: ClientContext): void {
+@@ -1541,6 +2280,7 @@ function applyCore(ctx: ClientContext): void {
    // being enabled and retracted on dispose.
    client.effect(() => {
      let observer: MutationObserver | undefined;
@@ -2631,7 +2853,7 @@ index 9153466..fb80704 100644
      const navigate = (): void => {
        if (!document.body.classList.contains('dsh-lg-on')) return;
        const menu = document.querySelector<HTMLElement>('[data-composer-card] [role="menu"]');
-@@ -1573,7 +2308,7 @@ function applyCore(ctx: ClientContext): void {
+@@ -1573,7 +2313,7 @@ function applyCore(ctx: ClientContext): void {
          return;
        }
        // Defer so the menu has settled into the DOM before we click it.
@@ -2640,15 +2862,34 @@ index 9153466..fb80704 100644
          try {
            modelCell.click();
          } catch {
-@@ -1584,10 +2319,14 @@ function applyCore(ctx: ClientContext): void {
+@@ -1584,10 +2324,32 @@ function applyCore(ctx: ClientContext): void {
        });
      };
  
 -    // Catch the menu being added/removed, and re-run once after React settles.
-+    // Catch the menu being added/removed with animation frame debouncing.
-     observer = new MutationObserver(() => {
+-    observer = new MutationObserver(() => {
 -      navigate();
 -      requestAnimationFrame(() => navigate());
++    // Catch the menu being added/removed with animation frame debouncing.
++    observer = new MutationObserver((mutations) => {
++      if (!document.body.classList.contains('dsh-lg-on')) return;
++      let mightHaveMenu = false;
++      for (const m of mutations) {
++        if (m.addedNodes.length > 0) {
++          for (let i = 0; i < m.addedNodes.length; i++) {
++            const node = m.addedNodes[i];
++            if (node.nodeType === 1) {
++              const el = node as Element;
++              if (el.getAttribute('role') === 'menu' || el.querySelector?.('[role="menu"]')) {
++                mightHaveMenu = true;
++                break;
++              }
++            }
++          }
++          if (mightHaveMenu) break;
++        }
++      }
++      if (!mightHaveMenu) return;
 +      if (scheduled) return;
 +      scheduled = true;
 +      scheduleTask(() => {
@@ -2658,7 +2899,7 @@ index 9153466..fb80704 100644
      });
      observer.observe(document.body, { childList: true, subtree: true });
  
-@@ -1616,36 +2355,36 @@ function applyCore(ctx: ClientContext): void {
+@@ -1616,36 +2378,53 @@ function applyCore(ctx: ClientContext): void {
    // Water-drop settings icon. The settings shell picks a nav glyph per section
    // id via a HARD-CODED map (see `navIcon` in dsh-client-ui-settings-general):
    // ids it doesn't know — including ours, `liquid-glass` — all fall back to the
@@ -2703,11 +2944,29 @@ index 9153466..fb80704 100644
 +      cell.setAttribute('data-dsh-liquid-glass-settings-nav', '');
      };
 -    applyIcon();
-+
-+    markNav();
-     const observer = new MutationObserver(() => {
+-    const observer = new MutationObserver(() => {
 -      applyIcon();
 -      requestAnimationFrame(() => applyIcon());
++
++    markNav();
++    const observer = new MutationObserver((mutations) => {
++      let mightHaveDialog = false;
++      for (const m of mutations) {
++        if (m.addedNodes.length > 0) {
++          for (let i = 0; i < m.addedNodes.length; i++) {
++            const node = m.addedNodes[i];
++            if (node.nodeType === 1) {
++              const el = node as Element;
++              if (el.getAttribute('role') === 'dialog' || el.querySelector?.('[role="dialog"]')) {
++                mightHaveDialog = true;
++                break;
++              }
++            }
++          }
++          if (mightHaveDialog) break;
++        }
++      }
++      if (!mightHaveDialog) return;
 +      if (scheduled) return;
 +      scheduled = true;
 +      scheduleTask(() => {
@@ -2717,6 +2976,95 @@ index 9153466..fb80704 100644
      });
      observer.observe(document.body, { childList: true, subtree: true });
      return () => {
+diff --git a/src/index.ts b/src/index.ts
+index cc1f60d..96abec9 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -15,7 +15,7 @@
+  */
+ import z from '@deepseek-ai/schemastery';
+ import { createReadStream } from 'node:fs';
+-import { mkdir, stat, writeFile } from 'node:fs/promises';
++import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+ import { basename, extname, join, normalize, resolve, sep } from 'node:path';
+ import type { IncomingMessage, ServerResponse } from 'node:http';
+ import { WALLPAPER_ROUTE, PROXY_ROUTE, UPLOAD_ROUTE } from './shared';
+@@ -55,25 +55,27 @@ const MIME: Record<string, string> = {
+ /**
+  * Default demo wallpaper written on first boot when demo.html is missing, so
+  * the client's out-of-the-box default (wallpaper.value = 'demo.html') always
+- * resolves on a fresh install. Param-driven: reads ?sp/&bl/&cc/&bf/&op/&w.
++ * resolves on a fresh install. Ultra-smooth GPU compositor accelerated design:
++ * uses radial gradients + transform transforms without per-frame blur re-rasterization.
+  */
+ const DEMO_HTML = `<!doctype html><html><head><meta charset="utf-8"><style>
+ html,body{margin:0;height:100%;overflow:hidden}
+ body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364,#35265a);display:flex;align-items:center;justify-content:center;font-family:system-ui;color:#fff;text-align:center}
+-body::before{content:"";position:fixed;inset:-10%;z-index:0;background:linear-gradient(115deg,#ff5f6d,#ffc371 25%,#36d1dc 50%,#5b86e5 75%,#a18cd1 100%);background-size:300% 300%;animation:wash var(--wash-dur,7s) ease-in-out infinite;filter:blur(70px) saturate(150%);opacity:.30;pointer-events:none}
+-body.no-wash::before{animation:none}
+-.blob{position:absolute;width:55vmin;height:55vmin;border-radius:50%;filter:blur(var(--blob-blur,65px)) saturate(140%);opacity:var(--blob-op,.85);animation:float var(--float-dur,5s) ease-in-out infinite,hue var(--hue-dur,4.5s) linear infinite}
+-.b1{background:#7f7fd5;top:-12%;left:-6%}
+-.b2{background:#86a8e7;bottom:-16%;right:-6%;animation-delay:-1.25s}
+-.b3{background:#91eae4;top:38%;left:52%;animation-delay:-2.5s}
+-.b4{background:#ff5f6d;top:8%;right:10%;animation-delay:-3.75s}
+-.b5{background:#ffc371;bottom:6%;left:16%;animation-delay:-1.9s}
+-.b6{background:#a18cd1;top:45%;left:-12%;animation-delay:-3.1s}
+-@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(7vmin,-7vmin) scale(1.22)}}
+-@keyframes hue{0%{filter:blur(var(--blob-blur,65px)) saturate(140%) hue-rotate(0deg)}100%{filter:blur(var(--blob-blur,65px)) saturate(140%) hue-rotate(360deg)}}
+-@keyframes wash{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+-h1{position:relative;z-index:1;font-weight:300;letter-spacing:.2em;font-size:3vmin}
+-</style></head><body><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div><div class="blob b5"></div><div class="blob b6"></div><h1>LIQUID GLASS WALLPAPER</h1>
++body::before{content:"";position:fixed;inset:-20%;z-index:0;background:radial-gradient(circle at 50% 50%,#ff5f6d,#ffc371 25%,#36d1dc 50%,#5b86e5 75%,#a18cd1 100%);opacity:.28;pointer-events:none;will-change:transform;transform:translate3d(0,0,0);animation:wash-flow var(--wash-dur,8s) ease-in-out infinite alternate}
++body.no-wash::before{animation:none;display:none}
++.stage{position:absolute;inset:0;overflow:hidden;pointer-events:none;will-change:filter;animation:hue-cycle var(--hue-dur,18s) linear infinite}
++.blob{position:absolute;width:60vmin;height:60vmin;border-radius:50%;opacity:var(--blob-op,.85);filter:blur(var(--blob-blur,40px));will-change:transform;transform:translate3d(0,0,0);backface-visibility:hidden;animation:float var(--float-dur,5s) ease-in-out infinite alternate}
++.b1{background:radial-gradient(circle,#7f7fd5 10%,rgba(127,127,213,0.7) 45%,transparent 70%);top:-12%;left:-6%}
++.b2{background:radial-gradient(circle,#86a8e7 10%,rgba(134,168,231,0.7) 45%,transparent 70%);bottom:-16%;right:-6%;animation-delay:-1.25s}
++.b3{background:radial-gradient(circle,#91eae4 10%,rgba(145,234,228,0.7) 45%,transparent 70%);top:38%;left:52%;animation-delay:-2.5s}
++.b4{background:radial-gradient(circle,#ff5f6d 10%,rgba(255,95,109,0.7) 45%,transparent 70%);top:8%;right:10%;animation-delay:-3.75s}
++.b5{background:radial-gradient(circle,#ffc371 10%,rgba(255,195,113,0.7) 45%,transparent 70%);bottom:6%;left:16%;animation-delay:-1.9s}
++.b6{background:radial-gradient(circle,#a18cd1 10%,rgba(161,140,209,0.7) 45%,transparent 70%);top:45%;left:-12%;animation-delay:-3.1s}
++@keyframes float{0%{transform:translate3d(0,0,0) scale(1) rotate(0deg)}100%{transform:translate3d(8vmin,-8vmin,0) scale(1.22) rotate(45deg)}}
++@keyframes hue-cycle{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
++@keyframes wash-flow{0%{transform:translate3d(-3%,-3%,0) scale(1) rotate(0deg)}100%{transform:translate3d(3%,3%,0) scale(1.15) rotate(15deg)}}
++h1{position:relative;z-index:1;font-weight:300;letter-spacing:.2em;font-size:3vmin;text-shadow:0 2px 12px rgba(0,0,0,0.4)}
++</style></head><body><div class="stage"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div><div class="blob b5"></div><div class="blob b6"></div></div><h1>LIQUID GLASS WALLPAPER</h1>
+ <script>
+ (function(){
+   function num(v,d,min,max){v=parseFloat(v);return isFinite(v)?Math.min(max,Math.max(min,v)):d}
+@@ -86,9 +88,9 @@ h1{position:relative;z-index:1;font-weight:300;letter-spacing:.2em;font-size:3vm
+   var wash=q.get('w')!=='0';
+   var root=document.documentElement;
+   root.style.setProperty('--float-dur',(5/sp).toFixed(2)+'s');
+-  root.style.setProperty('--wash-dur',(7/sp).toFixed(2)+'s');
++  root.style.setProperty('--wash-dur',(8/sp).toFixed(2)+'s');
+   root.style.setProperty('--hue-dur',cc===0?'999999s':(18/cc).toFixed(2)+'s');
+-  root.style.setProperty('--blob-blur',bf+'px');
++  root.style.setProperty('--blob-blur',Math.round(bf*0.6)+'px');
+   root.style.setProperty('--blob-op',String(op));
+   if(!wash)document.body.classList.add('no-wash');
+   var blobs=document.querySelectorAll('.blob');
+@@ -99,15 +101,17 @@ h1{position:relative;z-index:1;font-weight:300;letter-spacing:.2em;font-size:3vm
+ 
+ /**
+  * Ensure the wallpaper dir has a demo.html: writes the built-in default only
+- * when the file is missing (a user's own demo.html always wins). Failures are
+- * swallowed — a missing demo wallpaper must never take the plugin down.
++ * when the file is missing or contains legacy frame-dropping blur animations.
+  */
+ async function ensureDemoWallpaper(root: string): Promise<void> {
+   try {
+     await mkdir(root, { recursive: true });
+     const target = join(root, 'demo.html');
+     try {
+-      await stat(target);
++      const existing = await readFile(target, 'utf8');
++      if (existing.includes('LIQUID GLASS WALLPAPER') && (existing.includes('keyframes hue') || !existing.includes('wash-flow'))) {
++        await writeFile(target, DEMO_HTML, 'utf8');
++      }
+       return;
+     } catch {
+       // missing — fall through and write the default
 diff --git a/test/client.smoke.mjs b/test/client.smoke.mjs
 index ca1f76f..d370cf2 100644
 --- a/test/client.smoke.mjs
