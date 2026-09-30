@@ -29,9 +29,7 @@ A complete frosted-glass skin: SVG edge refraction, a customizable animated
 wallpaper, glass-lens buttons, a redesigned full-screen model selector, and a
 dedicated water-drop settings icon.
 
-> **v0.4.2** — Requires **DeepSeek Harness ≥ `0.1.2-rc.1`**. This release adapts
-> to the harness client-package split: the store part of the removed
-> `@deepseek-ai/dsh-client-runtime` now lives in `@deepseek-ai/dsh-client-store`.
+> **v0.4.3** — Requires **DeepSeek Harness ≥ `0.1.2-rc.1`** (fully compatible with DSH `0.2.0-rc.2+`).
 > See [CHANGELOG.md](CHANGELOG.md).
 
 ---

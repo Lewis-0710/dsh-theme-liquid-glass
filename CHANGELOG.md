@@ -10,6 +10,20 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.4.3] - 2026-09-30
+
+### 中文
+
+#### 兼容性
+- 适配 DeepSeek Harness `0.2.0-rc.2+`（放宽 `peerDependencies` 中的 `@deepseek-ai/dsh-*` 版本范围至 `>=0.1.2-rc.1 <0.3.0-0`，解决新版 DSH 启动时的插件兼容性校验拦截报错）。
+
+### English
+
+#### Compatibility
+- Support DeepSeek Harness `0.2.0-rc.2+` (relaxed `@deepseek-ai/dsh-*` peerDependencies range to `>=0.1.2-rc.1 <0.3.0-0` to satisfy the strict runtime compatibility check in newer DSH releases).
+
+---
+
 ## [0.4.2] - 2026-09-05
 
 ### 中文

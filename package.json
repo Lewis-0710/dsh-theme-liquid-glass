@@ -1,6 +1,6 @@
 {
     "name": "dsh-theme-liquid-glass",
-    "version": "0.4.2",
+    "version": "0.4.3",
     "description": "Genuine Liquid Glass theme for DSH Web UI: SVG feDisplacementMap edge refraction on input card, send button, bubbles, view tabs, queue dock and sidebar. Built-in animated demo wallpaper, customizable background blur & brightness, redesigned model selector popup, glass-styled buttons, and a unique water-drop settings icon.",
     "type": "module",
     "main": "lib/index.js",
@@ -77,12 +77,12 @@
     },
     "peerDependencies": {
         "react": "^18.2.0",
-        "@deepseek-ai/cordis": "^4.0.1",
-        "@deepseek-ai/dsh-client-store": "^0.1.2-rc.1",
-        "@deepseek-ai/dsh-client-locale": "^0.1.0-rc.6",
-        "@deepseek-ai/dsh-client-ui-theme": "^0.1.0-rc.6",
-        "@deepseek-ai/dsh-client-ui-settings": "^0.1.0-rc.6",
-        "@deepseek-ai/dsh-client-ui-slots": "^0.1.0-rc.6"
+        "@deepseek-ai/cordis": ">=4.0.1",
+        "@deepseek-ai/dsh-client-store": ">=0.1.2-rc.1 <0.3.0-0",
+        "@deepseek-ai/dsh-client-locale": ">=0.1.0-rc.6 <0.3.0-0",
+        "@deepseek-ai/dsh-client-ui-theme": ">=0.1.0-rc.6 <0.3.0-0",
+        "@deepseek-ai/dsh-client-ui-settings": ">=0.1.0-rc.6 <0.3.0-0",
+        "@deepseek-ai/dsh-client-ui-slots": ">=0.1.0-rc.6 <0.3.0-0"
     },
     "peerDependenciesMeta": {
         "@deepseek-ai/cordis": {
