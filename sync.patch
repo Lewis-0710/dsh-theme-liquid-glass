@@ -96,7 +96,7 @@ index e0b8578..d48772d 100644
  ---
  
 diff --git a/lib/client.js b/lib/client.js
-index 4632552..57cd9a2 100644
+index 4632552..f01651d 100644
 --- a/lib/client.js
 +++ b/lib/client.js
 @@ -255,6 +255,10 @@ function readStoredSettings() {
@@ -396,7 +396,7 @@ index 4632552..57cd9a2 100644
  /* Tool call titles (Read, Think, Edit, Bash, etc.): text-shadow for
     readability on glass backgrounds, plus optional custom color. */
  body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="title"] {
-@@ -615,62 +661,200 @@ body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="summary"] {
+@@ -615,62 +661,213 @@ body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="summary"] {
    color: var(--dsh-lg-tool-text-color, var(--dsw-alias-label-secondary));
    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
  }
@@ -421,6 +421,8 @@ index 4632552..57cd9a2 100644
 +body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i],
 +body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"],
 +body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i],
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i],
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i],
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"],
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i],
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="chip_"],
@@ -466,6 +468,8 @@ index 4632552..57cd9a2 100644
 +body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i],
 +body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"],
 +body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i],
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i],
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i],
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"],
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] {
 +  width: 28px !important;
@@ -522,10 +526,7 @@ index 4632552..57cd9a2 100644
 +  line-height: 20px !important;
 +  font-weight: 500 !important;
 +  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45) !important;
- }
--body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[aria-label="命令"]:hover::before,
--body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:hover::before {
--  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 42%, transparent);
++}
 +
 +/* 彻底禁用任何多余伪元素层 */
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *)::before,
@@ -536,13 +537,15 @@ index 4632552..57cd9a2 100644
 +  content: none !important;
 +}
 +
-+/* 纯白图标 (通用规则：覆盖 tools 区域内所有这4个按钮的 SVG) */
++/* 纯白图标 (通用规则：覆盖 tools 区域内所有按钮的 SVG 与 path) */
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *) svg,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg,
 +body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg,
 +body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg,
 +body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg,
 +body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg,
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i] svg,
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i] svg,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg,
 +body.dsh-lg-on [data-composer-card] [class*="chip_"] svg,
@@ -551,42 +554,48 @@ index 4632552..57cd9a2 100644
 +  opacity: 1 !important;
 +  visibility: visible !important;
 +  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45)) !important;
- }
-+
-+/* 实心图标纯白填充 (指令 +, 附件 📎, 分支 图标) */
-+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg,
-+body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg,
-+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg,
-+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg,
-+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg,
-+body.dsh-lg-on [data-composer-card] [class*="chip_"] svg,
-+body.dsh-lg-on [data-composer-card] [class*="dock_"] svg {
-+  fill: #ffffff !important;
-+  stroke: none !important;
 +}
++
++/* 确保所有 path 元素具备完整可见性 */
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *) svg path,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg path,
 +body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg path,
 +body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg path,
 +body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg path,
 +body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i] svg path,
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg path,
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg path,
 +body.dsh-lg-on [data-composer-card] [class*="chip_"] svg path,
 +body.dsh-lg-on [data-composer-card] [class*="dock_"] svg path {
-+  fill: #ffffff !important;
-+  stroke: none !important;
 +  opacity: 1 !important;
++  visibility: visible !important;
+ }
+-body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[aria-label="命令"]:hover::before,
+-body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:hover::before {
+-  background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 42%, transparent);
++
++/* 描边 Outline 图标（加号 +、附件 📎、通知铃铛 🔔、分支图标等）：
++   DSH 原生 Outline 图标为 stroke="currentColor"，绝不可设置 stroke: none！赋予纯白描边保证极其清晰 */
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *) svg path,
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i] svg path,
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg path,
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg path,
++body.dsh-lg-on [data-composer-card] [class*="chip_"] svg path,
++body.dsh-lg-on [data-composer-card] [class*="dock_"] svg path {
++  stroke: #ffffff !important;
 +}
 +
-+/* 描边图标纯白描边 (通知开关铃铛 🔔 图标) */
-+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg,
-+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg {
-+  fill: none !important;
-+  stroke: #ffffff !important;
-+}
-+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg path,
-+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg path {
-+  fill: none !important;
-+  stroke: #ffffff !important;
-+  opacity: 1 !important;
++/* 实心填充图标（若有闭合填充图形）：保持纯白填充 */
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *) svg:not([fill="none"]):not([stroke]) path {
++  fill: #ffffff !important;
 +}
 +
 +/* 2. 悬停状态：100% 完全对齐模型选择入口 (ModelSelect) 的效果
@@ -597,6 +606,8 @@ index 4632552..57cd9a2 100644
 +body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:hover,
 +body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"]:hover,
 +body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i]:hover,
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i]:hover,
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i]:hover,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"]:hover,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i]:hover,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="chip_"]:hover,
@@ -616,6 +627,8 @@ index 4632552..57cd9a2 100644
 +body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:active,
 +body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"]:active,
 +body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i]:active,
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i]:active,
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i]:active,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"]:active,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i]:active,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="chip_"]:active,
@@ -624,7 +637,7 @@ index 4632552..57cd9a2 100644
 +  background: var(--dsw-alias-interactive-bg-active, rgba(255, 255, 255, 0.20)) !important;
 +  background-color: var(--dsw-alias-interactive-bg-active, rgba(255, 255, 255, 0.20)) !important;
 +  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14) !important;
-+}
+ }
 +
 +
 +
@@ -641,7 +654,7 @@ index 4632552..57cd9a2 100644
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.40),
      inset 0 0 0 1px rgba(255, 255, 255, 0.14),
-@@ -701,30 +885,31 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[class*="_primary"
+@@ -701,30 +898,31 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[class*="_primary"
  }
  /* Queue dock: same frosted glass + a wider lens rim. */
  body.dsh-lg-on [data-queue-dock] > div {
@@ -682,7 +695,7 @@ index 4632552..57cd9a2 100644
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 8%, transparent);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.30),
-@@ -733,7 +918,8 @@ body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button:not([aria-label
+@@ -733,7 +931,8 @@ body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button:not([aria-label
      inset 2px 2px 6px 2px rgba(255, 255, 255, 0.10),
      inset -2px -2px 4px -1px rgba(255, 255, 255, 0.10);
  }
@@ -692,7 +705,7 @@ index 4632552..57cd9a2 100644
    background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 12%, transparent);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.18),
-@@ -742,18 +928,523 @@ body[data-ds-dark-theme].dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) bu
+@@ -742,18 +941,523 @@ body[data-ds-dark-theme].dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) bu
      inset 2px 2px 6px 2px rgba(255, 255, 255, 0.06),
      inset -2px -2px 4px -1px rgba(255, 255, 255, 0.06);
  }
@@ -1220,7 +1233,7 @@ index 4632552..57cd9a2 100644
    display: none !important;
  }
  /* Sidebar logo / branding: exclude from the liquid glass effect — the square
-@@ -806,11 +1497,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
+@@ -806,11 +1510,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
  body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
    background: rgba(0, 0, 0, 0.55);
  }
@@ -1239,7 +1252,7 @@ index 4632552..57cd9a2 100644
    margin: 0 auto !important;
    border-radius: 16px !important;
    -webkit-backdrop-filter: blur(28px) saturate(160%);
-@@ -820,6 +1514,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
+@@ -820,6 +1527,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
      inset 0 1px 0 rgba(255, 255, 255, 0.45),
      inset 0 0 0 1px rgba(255, 255, 255, 0.18),
      0 24px 60px rgba(0, 0, 0, 0.35);
@@ -1247,7 +1260,7 @@ index 4632552..57cd9a2 100644
    overflow-y: auto !important;
  }
  body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
-@@ -829,8 +1524,41 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollabl
+@@ -829,8 +1537,41 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollabl
      inset 0 0 0 1px rgba(255, 255, 255, 0.10),
      0 24px 60px rgba(0, 0, 0, 0.55);
  }
@@ -1291,7 +1304,7 @@ index 4632552..57cd9a2 100644
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 82%, transparent) !important;
    -webkit-backdrop-filter: blur(28px) saturate(160%);
    backdrop-filter: blur(28px) saturate(160%);
-@@ -842,7 +1570,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] > :first-child:not(.scrollable
+@@ -842,7 +1583,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] > :first-child:not(.scrollable
    width: 280px !important;
    overflow: hidden !important;
  }
@@ -1300,7 +1313,7 @@ index 4632552..57cd9a2 100644
    background: color-mix(in srgb, var(--dsh-lg-tint-dark, #2a2a2a) 86%, transparent) !important;
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.25),
-@@ -875,11 +1603,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"] [role="group"] > div:first-chi
+@@ -875,11 +1616,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"] [role="group"] > div:first-chi
    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
    font-size: 13px !important;
  }
@@ -1317,7 +1330,7 @@ index 4632552..57cd9a2 100644
    transition: background 0.15s !important;
    background: transparent !important;
  }
-@@ -897,17 +1628,17 @@ body.dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][a
+@@ -897,17 +1641,17 @@ body.dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][a
  body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][aria-checked="true"] {
    background: color-mix(in srgb, var(--dsw-alias-brand-primary) 22%, transparent) !important;
  }
@@ -1342,7 +1355,7 @@ index 4632552..57cd9a2 100644
  }
  /* Click-to-dismiss: cursor pointer on the backdrop, default cursor on the panel. */
  body.dsh-lg-on [data-composer-card] [role="menu"] {
-@@ -919,8 +1650,8 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
+@@ -919,8 +1663,8 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
  /* Access-mode dropdown glass (see EDGE note below). */
  body.dsh-lg-on [data-composer-card] [role="menu"]:not(:has(.scrollable)) {
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 74%, transparent) !important;
@@ -1353,7 +1366,7 @@ index 4632552..57cd9a2 100644
    border: 1px solid rgba(255, 255, 255, 0.18);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.45),
-@@ -1935,6 +2666,13 @@ function applyCore(ctx) {
+@@ -1935,6 +2679,13 @@ function applyCore(ctx) {
      // through the theme service itself).
      const offThemeChange = client.on?.('theme/change', ()=>safe('theme-change scrim', ()=>applier?.refreshScrim()));
      client.effect(()=>offThemeChange, 'liquid-glass: theme-change scrim');
@@ -1367,7 +1380,7 @@ index 4632552..57cd9a2 100644
      // Model menu behaviour: clicking the composer model selector opens a two-pane
      // menu (a "root" pane all-in-one list, then a model list). Users asked to skip
      // the intermediate root pane and jump straight to the model list, render it in
-@@ -1947,6 +2685,7 @@ function applyCore(ctx) {
+@@ -1947,6 +2698,7 @@ function applyCore(ctx) {
      // being enabled and retracted on dispose.
      client.effect(()=>{
          let observer;
@@ -1375,7 +1388,7 @@ index 4632552..57cd9a2 100644
          const navigate = ()=>{
              if (!document.body.classList.contains('dsh-lg-on')) return;
              const menu = document.querySelector('[data-composer-card] [role="menu"]');
-@@ -1977,7 +2716,7 @@ function applyCore(ctx) {
+@@ -1977,7 +2729,7 @@ function applyCore(ctx) {
                  return;
              }
              // Defer so the menu has settled into the DOM before we click it.
@@ -1384,7 +1397,7 @@ index 4632552..57cd9a2 100644
                  try {
                      modelCell.click();
                  } catch  {
-@@ -1986,10 +2725,32 @@ function applyCore(ctx) {
+@@ -1986,10 +2738,32 @@ function applyCore(ctx) {
                  }
              });
          };
@@ -1421,7 +1434,7 @@ index 4632552..57cd9a2 100644
          });
          observer.observe(document.body, {
              childList: true,
-@@ -2022,33 +2783,53 @@ function applyCore(ctx) {
+@@ -2022,33 +2796,53 @@ function applyCore(ctx) {
      // Water-drop settings icon. The settings shell picks a nav glyph per section
      // id via a HARD-CODED map (see `navIcon` in dsh-client-ui-settings-general):
      // ids it doesn't know — including ours, `liquid-glass` — all fall back to the
@@ -1650,7 +1663,7 @@ index 46e753c..cd1ebb0 100644
      "peerDependenciesMeta": {
          "@deepseek-ai/cordis": {
 diff --git a/src/client/index.tsx b/src/client/index.tsx
-index 9153466..048256f 100644
+index 9153466..3590868 100644
 --- a/src/client/index.tsx
 +++ b/src/client/index.tsx
 @@ -218,6 +218,10 @@ function buildTokens(s: LiquidGlassSettings): ThemeTokenOverrides {
@@ -1950,7 +1963,7 @@ index 9153466..048256f 100644
  /* Tool call titles (Read, Think, Edit, Bash, etc.): text-shadow for
     readability on glass backgrounds, plus optional custom color. */
  body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="title"] {
-@@ -577,62 +623,200 @@ body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="summary"] {
+@@ -577,62 +623,213 @@ body.dsh-lg-on [data-variant] [data-disclosure-row] [class*="summary"] {
    color: var(--dsh-lg-tool-text-color, var(--dsw-alias-label-secondary));
    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
  }
@@ -1975,6 +1988,8 @@ index 9153466..048256f 100644
 +body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i],
 +body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"],
 +body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i],
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i],
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i],
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"],
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i],
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="chip_"],
@@ -2003,6 +2018,8 @@ index 9153466..048256f 100644
 +body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i],
 +body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"],
 +body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i],
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i],
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i],
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"],
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] {
 +  width: 28px !important;
@@ -2091,13 +2108,15 @@ index 9153466..048256f 100644
 +  content: none !important;
 +}
 +
-+/* 纯白图标 (通用规则：覆盖 tools 区域内所有这4个按钮的 SVG) */
++/* 纯白图标 (通用规则：覆盖 tools 区域内所有按钮的 SVG 与 path) */
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *) svg,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg,
 +body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg,
 +body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg,
 +body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg,
 +body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg,
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i] svg,
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i] svg,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg,
 +body.dsh-lg-on [data-composer-card] [class*="chip_"] svg,
@@ -2108,40 +2127,43 @@ index 9153466..048256f 100644
 +  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45)) !important;
 +}
 +
-+/* 实心图标纯白填充 (指令 +, 附件 📎, 分支 图标) */
-+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg,
-+body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg,
-+body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg,
-+body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg,
-+body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg,
-+body.dsh-lg-on [data-composer-card] [class*="chip_"] svg,
-+body.dsh-lg-on [data-composer-card] [class*="dock_"] svg {
-+  fill: #ffffff !important;
-+  stroke: none !important;
-+}
++/* 确保所有 path 元素具备完整可见性 */
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *) svg path,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg path,
 +body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg path,
 +body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg path,
 +body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg path,
 +body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i] svg path,
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg path,
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg path,
 +body.dsh-lg-on [data-composer-card] [class*="chip_"] svg path,
 +body.dsh-lg-on [data-composer-card] [class*="dock_"] svg path {
-+  fill: #ffffff !important;
-+  stroke: none !important;
 +  opacity: 1 !important;
++  visibility: visible !important;
 +}
 +
-+/* 描边图标纯白描边 (通知开关铃铛 🔔 图标) */
-+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg,
-+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg {
-+  fill: none !important;
++/* 描边 Outline 图标（加号 +、附件 📎、通知铃铛 🔔、分支图标等）：
++   DSH 原生 Outline 图标为 stroke="currentColor"，绝不可设置 stroke: none！赋予纯白描边保证极其清晰 */
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *) svg path,
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button[class*="add"] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label="指令"] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i] svg path,
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i] svg path,
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg path,
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg path,
++body.dsh-lg-on [data-composer-card] [class*="chip_"] svg path,
++body.dsh-lg-on [data-composer-card] [class*="dock_"] svg path {
 +  stroke: #ffffff !important;
 +}
-+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"] svg path,
-+body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i] svg path {
-+  fill: none !important;
-+  stroke: #ffffff !important;
-+  opacity: 1 !important;
++
++/* 实心填充图标（若有闭合填充图形）：保持纯白填充 */
++body.dsh-lg-on [data-composer-card] [class*="_tools"] button:not([class*="_modes"] button):not([class*="_modes"] *) svg:not([fill="none"]):not([stroke]) path {
++  fill: #ffffff !important;
 +}
 +
 +/* 2. 悬停状态：100% 完全对齐模型选择入口 (ModelSelect) 的效果
@@ -2152,6 +2174,8 @@ index 9153466..048256f 100644
 +body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:hover,
 +body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"]:hover,
 +body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i]:hover,
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i]:hover,
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i]:hover,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"]:hover,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i]:hover,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="chip_"]:hover,
@@ -2171,6 +2195,8 @@ index 9153466..048256f 100644
 +body.dsh-lg-on [data-composer-card] button[aria-label*="Command" i]:active,
 +body.dsh-lg-on [data-composer-card] button[aria-label="添加附件"]:active,
 +body.dsh-lg-on [data-composer-card] button[aria-label*="attachment" i]:active,
++body.dsh-lg-on [data-composer-card] button[aria-label*="添加文件或调用指令" i]:active,
++body.dsh-lg-on [data-composer-card] button[aria-label*="Add files or run commands" i]:active,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="通知"]:active,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] button[title*="Notification" i]:active,
 +body.dsh-lg-on [data-composer-card] [class*="_tools"] [class*="chip_"]:active,
@@ -2196,7 +2222,7 @@ index 9153466..048256f 100644
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.40),
      inset 0 0 0 1px rgba(255, 255, 255, 0.14),
-@@ -663,30 +847,31 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[class*="_primary"
+@@ -663,30 +860,31 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] button[class*="_primary"
  }
  /* Queue dock: same frosted glass + a wider lens rim. */
  body.dsh-lg-on [data-queue-dock] > div {
@@ -2237,7 +2263,7 @@ index 9153466..048256f 100644
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 8%, transparent);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.30),
-@@ -695,7 +880,8 @@ body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button:not([aria-label
+@@ -695,7 +893,8 @@ body.dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) button:not([aria-label
      inset 2px 2px 6px 2px rgba(255, 255, 255, 0.10),
      inset -2px -2px 4px -1px rgba(255, 255, 255, 0.10);
  }
@@ -2247,7 +2273,7 @@ index 9153466..048256f 100644
    background: color-mix(in srgb, var(--dsh-lg-tint-dark, #333333) 12%, transparent);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.18),
-@@ -704,18 +890,523 @@ body[data-ds-dark-theme].dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) bu
+@@ -704,18 +903,523 @@ body[data-ds-dark-theme].dsh-lg-on [class*="_root"]:has([class*="_treeBody"]) bu
      inset 2px 2px 6px 2px rgba(255, 255, 255, 0.06),
      inset -2px -2px 4px -1px rgba(255, 255, 255, 0.06);
  }
@@ -2775,7 +2801,7 @@ index 9153466..048256f 100644
    display: none !important;
  }
  /* Sidebar logo / branding: exclude from the liquid glass effect — the square
-@@ -768,11 +1459,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
+@@ -768,11 +1472,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
  body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"]:has(.scrollable)::before {
    background: rgba(0, 0, 0, 0.55);
  }
@@ -2794,7 +2820,7 @@ index 9153466..048256f 100644
    margin: 0 auto !important;
    border-radius: 16px !important;
    -webkit-backdrop-filter: blur(28px) saturate(160%);
-@@ -782,6 +1476,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
+@@ -782,6 +1489,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
      inset 0 1px 0 rgba(255, 255, 255, 0.45),
      inset 0 0 0 1px rgba(255, 255, 255, 0.18),
      0 24px 60px rgba(0, 0, 0, 0.35);
@@ -2802,7 +2828,7 @@ index 9153466..048256f 100644
    overflow-y: auto !important;
  }
  body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
-@@ -791,8 +1486,41 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollabl
+@@ -791,8 +1499,41 @@ body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] .scrollabl
      inset 0 0 0 1px rgba(255, 255, 255, 0.10),
      0 24px 60px rgba(0, 0, 0, 0.55);
  }
@@ -2846,7 +2872,7 @@ index 9153466..048256f 100644
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 82%, transparent) !important;
    -webkit-backdrop-filter: blur(28px) saturate(160%);
    backdrop-filter: blur(28px) saturate(160%);
-@@ -804,7 +1532,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] > :first-child:not(.scrollable
+@@ -804,7 +1545,7 @@ body.dsh-lg-on [data-composer-card] [role="menu"] > :first-child:not(.scrollable
    width: 280px !important;
    overflow: hidden !important;
  }
@@ -2855,7 +2881,7 @@ index 9153466..048256f 100644
    background: color-mix(in srgb, var(--dsh-lg-tint-dark, #2a2a2a) 86%, transparent) !important;
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.25),
-@@ -837,11 +1565,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"] [role="group"] > div:first-chi
+@@ -837,11 +1578,14 @@ body.dsh-lg-on [data-composer-card] [role="menu"] [role="group"] > div:first-chi
    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
    font-size: 13px !important;
  }
@@ -2872,7 +2898,7 @@ index 9153466..048256f 100644
    transition: background 0.15s !important;
    background: transparent !important;
  }
-@@ -859,17 +1590,17 @@ body.dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][a
+@@ -859,17 +1603,17 @@ body.dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][a
  body[data-ds-dark-theme].dsh-lg-on [data-composer-card] [role="menu"] button[role="menuitemradio"][aria-checked="true"] {
    background: color-mix(in srgb, var(--dsw-alias-brand-primary) 22%, transparent) !important;
  }
@@ -2897,7 +2923,7 @@ index 9153466..048256f 100644
  }
  /* Click-to-dismiss: cursor pointer on the backdrop, default cursor on the panel. */
  body.dsh-lg-on [data-composer-card] [role="menu"] {
-@@ -881,8 +1612,8 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
+@@ -881,8 +1625,8 @@ body.dsh-lg-on [data-composer-card] [role="menu"] .scrollable {
  /* Access-mode dropdown glass (see EDGE note below). */
  body.dsh-lg-on [data-composer-card] [role="menu"]:not(:has(.scrollable)) {
    background: color-mix(in srgb, var(--dsh-lg-tint, #ffffff) 74%, transparent) !important;
@@ -2908,7 +2934,7 @@ index 9153466..048256f 100644
    border: 1px solid rgba(255, 255, 255, 0.18);
    box-shadow:
      inset 0 1px 0 rgba(255, 255, 255, 0.45),
-@@ -1529,6 +2260,14 @@ function applyCore(ctx: ClientContext): void {
+@@ -1529,6 +2273,14 @@ function applyCore(ctx: ClientContext): void {
    const offThemeChange = client.on?.('theme/change', () => safe('theme-change scrim', () => applier?.refreshScrim()));
    client.effect(() => offThemeChange, 'liquid-glass: theme-change scrim');
  
@@ -2923,7 +2949,7 @@ index 9153466..048256f 100644
    // Model menu behaviour: clicking the composer model selector opens a two-pane
    // menu (a "root" pane all-in-one list, then a model list). Users asked to skip
    // the intermediate root pane and jump straight to the model list, render it in
-@@ -1541,6 +2280,7 @@ function applyCore(ctx: ClientContext): void {
+@@ -1541,6 +2293,7 @@ function applyCore(ctx: ClientContext): void {
    // being enabled and retracted on dispose.
    client.effect(() => {
      let observer: MutationObserver | undefined;
@@ -2931,7 +2957,7 @@ index 9153466..048256f 100644
      const navigate = (): void => {
        if (!document.body.classList.contains('dsh-lg-on')) return;
        const menu = document.querySelector<HTMLElement>('[data-composer-card] [role="menu"]');
-@@ -1573,7 +2313,7 @@ function applyCore(ctx: ClientContext): void {
+@@ -1573,7 +2326,7 @@ function applyCore(ctx: ClientContext): void {
          return;
        }
        // Defer so the menu has settled into the DOM before we click it.
@@ -2940,7 +2966,7 @@ index 9153466..048256f 100644
          try {
            modelCell.click();
          } catch {
-@@ -1584,10 +2324,32 @@ function applyCore(ctx: ClientContext): void {
+@@ -1584,10 +2337,32 @@ function applyCore(ctx: ClientContext): void {
        });
      };
  
@@ -2977,7 +3003,7 @@ index 9153466..048256f 100644
      });
      observer.observe(document.body, { childList: true, subtree: true });
  
-@@ -1616,36 +2378,53 @@ function applyCore(ctx: ClientContext): void {
+@@ -1616,36 +2391,53 @@ function applyCore(ctx: ClientContext): void {
    // Water-drop settings icon. The settings shell picks a nav glyph per section
    // id via a HARD-CODED map (see `navIcon` in dsh-client-ui-settings-general):
    // ids it doesn't know — including ours, `liquid-glass` — all fall back to the
